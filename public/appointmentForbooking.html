@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Book an Appointment | Paws &amp; Company</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="stylesheets/main.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body id="paws-appointments">
+  <!-- Header/nav usually comes from layout; include here if needed -->
+
+  <main class="paws-apt-shell" aria-labelledby="apt-title">
+    <!-- Hero / Page Title -->
+    <section class="paws-apt-hero">
+      <h1 id="apt-title">Book an appointment</h1>
+      <p class="sub">Professional care with clear pricing and fast confirmation.</p>
+      <ul class="badges" aria-label="Reasons to book">
+        <li><i class="fa-solid fa-circle-check"></i> Licensed &amp; insured</li>
+        <li><i class="fa-solid fa-shield-dog"></i> Vet-reviewed policies</li>
+        <li><i class="fa-solid fa-camera"></i> Photo updates</li>
+      </ul>
+    </section>
+
+    <!-- Two-column layout: form + summary -->
+    <section class="paws-apt-grid">
+      <!-- Booking Form Card -->
+      <article class="paws-card" aria-label="Appointment booking form">
+        <h2 class="card-title">Your details</h2>
+        <form id="bookingForm" novalidate>
+          <!-- Owner -->
+          <fieldset class="paws-fieldset">
+            <legend>Owner information</legend>
+            <div class="grid-2">
+              <div class="paws-form-group">
+                <label for="ownerName">Full name</label>
+                <input id="ownerName" name="ownerName" type="text" class="paws-input"
+                       placeholder="Your Full Name" required />
+              </div>
+              <div class="paws-form-group">
+                <label for="ownerPhone">Phone</label>
+                <input id="ownerPhone" name="ownerPhone" type="tel" class="paws-input"
+                       placeholder="(555) 123-4567" required />
+              </div>
+            </div>
+            <div class="grid-2">
+              <div class="paws-form-group">
+                <label for="ownerEmail">Email</label>
+                <input id="ownerEmail" name="ownerEmail" type="email" class="paws-input"
+                       placeholder="you@example.com" required />
+              </div>
+              <div class="paws-form-group">
+                <label for="zip">ZIP code</label>
+                <input id="zip" name="zip" inputmode="numeric" class="paws-input"
+                       placeholder="94110" pattern="\d{5}" required />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Pet -->
+          <fieldset class="paws-fieldset">
+            <legend>Pet information</legend>
+            <div class="paws-form-group">
+              <label for="petSelect">Select pet</label>
+              <div style="display: flex; gap: 10px;">
+                <select id="petSelect" name="petSelect" class="paws-input" style="flex: 1;">
+                  <option value="">-- Choose from my pets --</option>
+                </select>
+                <button type="button" id="addNewPetBtn" class="paws-btn-outline"
+                        style="padding: 10px 16px; font-size: 13px;">
+                  + New Pet
+                </button>
+              </div>
+              <p id="petHint" style="font-size: 12px; color: #666; margin-top: 6px;"></p>
+            </div>
+
+            <!-- Pet Form Section (shown when no pet selected or adding new) -->
+            <div id="petFormSection" style="display: none;">
+              <div class="grid-3">
+                <div class="paws-form-group">
+                  <label for="petName">Pet name</label>
+                  <input id="petName" name="petName" type="text" class="paws-input" placeholder="Luna" />
+                </div>
+                <div class="paws-form-group">
+                  <label for="species">Species</label>
+                  <select id="species" name="species" class="paws-input">
+                    <option>Dog</option>
+                    <option>Cat</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="paws-form-group">
+                  <label for="breed">Breed</label>
+                  <input id="breed" name="breed" type="text" class="paws-input"
+                         placeholder="Golden Retriever" />
+                </div>
+              </div>
+              <div class="grid-3">
+                <div class="paws-form-group">
+                  <label for="age">Age</label>
+                  <input id="age" name="age" type="number" min="0" step="0.5"
+                         class="paws-input" placeholder="3" />
+                </div>
+                <div class="paws-form-group">
+                  <label for="weight">Weight (lb)</label>
+                  <input id="weight" name="weight" type="number" min="0" step="0.1"
+                         class="paws-input" placeholder="28" />
+                </div>
+                <div class="paws-form-group">
+                  <label for="vaccinated">Vaccinated</label>
+                  <select id="vaccinated" name="vaccinated" class="paws-input">
+                    <option>Yes</option>
+                    <option>No</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Service -->
+          <fieldset class="paws-fieldset">
+            <legend>Service &amp; schedule</legend>
+            <div class="grid-3">
+              <div class="paws-form-group">
+                <label for="service">Service</label>
+                <select id="service" name="service" class="paws-input" required>
+                  <option value="" data-price="0" selected>(select)</option>
+                  <!-- Will be replaced by /api/admin/public/services -->
+                </select>
+              </div>
+              <div class="paws-form-group">
+                <label for="date">Date</label>
+                <input id="date" name="date" type="date" class="paws-input" required />
+              </div>
+              <div class="paws-form-group">
+                <label for="time">Time</label>
+                <input id="time" name="time" type="time" class="paws-input" required />
+              </div>
+            </div>
+
+            <div class="paws-form-group">
+              <label for="addons">Add-ons</label>
+              <div class="paws-checkbox-list" id="addons">
+                <!-- Add-ons will be loaded dynamically -->
+              </div>
+            </div>
+
+            <div class="paws-form-group">
+              <label for="notes">Notes (meds, behavior, preferences)</label>
+              <textarea id="notes" name="notes" class="paws-input" rows="4"
+                        placeholder="Tell us anything helpful for caring for your pet."></textarea>
+            </div>
+          </fieldset>
+
+          <div class="paws-consent">
+            <label class="paws-check">
+              <input type="checkbox" id="agree" required />
+              <span>I agree to the <a href="terms.html">Terms</a> and confirm vaccinations are up-to-date.</span>
+            </label>
+          </div>
+
+          <button type="submit" class="paws-btn-primary">
+            <i class="fa-solid fa-calendar-check"></i> Request appointment
+          </button>
+
+          <p class="paws-form-hint" id="formHint" role="status" aria-live="polite"></p>
+        </form>
+      </article>
+
+      <!-- Summary / Help Card -->
+      <aside class="paws-card paws-summary" aria-label="Estimate and policies">
+        <h2 class="card-title">Estimate</h2>
+        <div class="est-line"><span>Base</span><span id="estBase">$0.00</span></div>
+        <div class="est-line"><span>Add-ons</span><span id="estAddons">$0.00</span></div>
+        <hr class="divider" />
+        <div class="est-total"><span>Total (before tax)</span><span id="estTotal">$0.00</span></div>
+
+        <h3 class="subhead">Business hours</h3>
+        <p>Mon–Sat: 8:00–18:00<br />Sun: by appointment</p>
+
+        <h3 class="subhead">Policies</h3>
+        <ul class="small">
+          <li>24-hour cancellation policy.</li>
+          <li>Vaccination required for daycare/boarding.</li>
+          <li>Photo updates available on request.</li>
+        </ul>
+
+        <a class="paws-btn-outline" href="faq.html" aria-label="Read frequently asked questions">
+          Read FAQs
+        </a>
+      </aside>
+    </section>
+  </main>
+<script>
+(function () {
+  // ---------- Helpers ----------
+  const $  = (s, r=document) => r.querySelector(s);
+  const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
+  const money = n => '$' + Number(n || 0).toFixed(2);
+
+  const TAX_RATE = 0.08625; // same as payment page
+
+  // Owner fields
+  const ownerName  = $('#ownerName');
+  const ownerEmail = $('#ownerEmail');
+  const ownerPhone = $('#ownerPhone');
+  const ownerZip   = $('#zip');
+
+  // Pet & service elements
+  const petSelect      = $('#petSelect');
+  const petFormSection = $('#petFormSection');
+  const petHint        = $('#petHint');
+
+  const serviceSel = $('#service');
+  const addonsWrap = $('#addons');
+  const dateInp    = $('#date');
+  const timeInp    = $('#time');
+  const form       = $('#bookingForm');
+  const hint       = $('#formHint');
+
+  const estBase   = $('#estBase');
+  const estAddons = $('#estAddons');
+  const estTotal  = $('#estTotal');
+
+  // ---------- Force login + auto-fill owner ----------
+  async function loadUserProfile() {
+    try {
+      const res = await fetch('/api/user/profile');
+      if (res.status === 401) {
+        // Not logged in → send to sign-in and come back here after
+        window.location.href = '/signIn.html?redirect=/appointmentForbooking.html';
+        return null;
+      }
+      const data = await res.json();
+      if (!data.ok || !data.user) return null;
+
+      const u = data.user;
+
+      // Fill owner info from profile
+      const fullName = [u.first_name, u.last_name].filter(Boolean).join(' ').trim();
+      if (fullName) ownerName.value = fullName;
+      if (u.email)  ownerEmail.value = u.email;
+      if (u.phone)  ownerPhone.value = u.phone;
+      if (u.zip_code) ownerZip.value = u.zip_code;
+
+      return u;
+    } catch (err) {
+      console.error('Error loading profile on booking page:', err);
+      // In case of error, still require login
+      window.location.href = '/signIn.html?redirect=/appointmentForbooking.html';
+      return null;
+    }
+  }
+
+  // ---------- Load user pets ----------
+  async function loadUserPets() {
+    try {
+      const res = await fetch('/api/user/pets');
+      const data = await res.json();
+
+      if (!data.ok || !Array.isArray(data.pets) || data.pets.length === 0) {
+        // No pets → hide dropdown, show pet form
+        petSelect.parentElement.style.display = 'none';
+        petFormSection.style.display = 'block';
+        petHint.textContent = 'No saved pets yet — add details below.';
+        return;
+      }
+
+      // Has pets → show dropdown, hide form until selection
+      petSelect.parentElement.style.display = 'flex';
+      petFormSection.style.display = 'none';
+      petSelect.innerHTML = '<option value="">-- Choose from my pets --</option>';
+
+      data.pets.forEach(pet => {
+        const opt = document.createElement('option');
+        opt.value = JSON.stringify(pet);
+        opt.textContent = `${pet.name} (${pet.species || 'Pet'})`;
+        petSelect.appendChild(opt);
+      });
+      petHint.textContent = 'Pick a pet, or click "New Pet" to add another.';
+    } catch (err) {
+      console.error('Error loading pets:', err);
+      petSelect.parentElement.style.display = 'none';
+      petFormSection.style.display = 'block';
+      petHint.textContent = 'Could not load saved pets, please enter details below.';
+    }
+  }
+
+  // ---------- Load services & add-ons ----------
+  async function loadServices() {
+    try {
+      const res = await fetch('/api/admin/public/services');
+      const data = await res.json();
+      if (!data.ok || !Array.isArray(data.services)) return;
+
+      serviceSel.innerHTML =
+        '<option value="" data-price="0" selected>(select)</option>';
+
+      window.servicesData = {};
+      data.services.forEach(svc => {
+        const opt = document.createElement('option');
+        opt.value = svc.id;
+        opt.dataset.price = svc.price;
+        opt.textContent = `${svc.name} — $${Number(svc.price).toFixed(2)}`;
+        serviceSel.appendChild(opt);
+        window.servicesData[svc.id] = svc;
+      });
+    } catch (err) {
+      console.error('Error loading services:', err);
+    }
+  }
+
+  async function loadAddons() {
+    try {
+      const res = await fetch('/api/admin/public/addons');
+      const data = await res.json();
+      addonsWrap.innerHTML = '';
+
+      if (!data.ok || !Array.isArray(data.addons)) return;
+
+      window.addonsData = {};
+      data.addons.forEach(addon => {
+        window.addonsData[addon.id] = addon;
+
+        const label = document.createElement('label');
+        label.style.display = 'flex';
+        label.style.alignItems = 'center';
+        label.style.gap = '6px';
+        label.style.fontSize = '14px';
+        label.style.marginBottom = '4px';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        cb.value = addon.id;
+        cb.dataset.price = addon.price;
+        cb.dataset.label = addon.name;
+
+        label.appendChild(cb);
+        label.appendChild(
+          document.createTextNode(` ${addon.name} (+$${Number(addon.price).toFixed(2)})`)
+        );
+
+        addonsWrap.appendChild(label);
+      });
+
+      // recalc when addons change
+      addonsWrap.addEventListener('change', recalcEstimate);
+      recalcEstimate();
+    } catch (err) {
+      console.error('Error loading addons:', err);
+    }
+  }
+
+  // ---------- Estimate calculator ----------
+  function getAddonsSelection() {
+    const checked = $$('input[type="checkbox"]:checked', addonsWrap);
+    const items = checked.map(el => ({
+      id: Number(el.value) || null,
+      label: el.dataset.label || 'Add-on',
+      price: Number(el.dataset.price || 0)
+    }));
+    const total = items.reduce((sum, a) => sum + a.price, 0);
+    return { items, total };
+  }
+
+  function recalcEstimate() {
+    const opt = serviceSel.selectedOptions[0];
+    const base = (opt && opt.value) ? Number(opt.dataset.price || 0) : 0;
+    const { total: addonsTotal } = getAddonsSelection();
+
+    estBase.textContent   = money(base);
+    estAddons.textContent = money(addonsTotal);
+    estTotal.textContent  = money(base + addonsTotal); // (pre-tax estimate)
+  }
+
+  // ---------- Pet selection handlers ----------
+  petSelect.addEventListener('change', (e) => {
+    if (!e.target.value) {
+      // Clear form for new pet
+      petFormSection.style.display = 'block';
+      $('#petName').value = '';
+      $('#species').value = 'Dog';
+      $('#breed').value = '';
+      $('#age').value = '';
+      $('#weight').value = '';
+      $('#vaccinated').value = 'Yes';
+      petHint.textContent = 'Fill in new pet details below.';
+      return;
+    }
+
+    const pet = JSON.parse(e.target.value);
+    petFormSection.style.display = 'block';
+
+    $('#petName').value = pet.name || '';
+    $('#species').value = pet.species || 'Dog';
+    $('#breed').value = pet.breed || '';
+    $('#age').value = pet.age || '';
+    $('#weight').value = pet.weight || '';
+    $('#vaccinated').value = pet.vaccinated ? 'Yes' : 'No';
+    petHint.textContent = `Selected: ${pet.name}`;
+  });
+
+  $('#addNewPetBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    petSelect.value = '';
+    petFormSection.style.display = 'block';
+    $('#petName').value = '';
+    $('#species').value = 'Dog';
+    $('#breed').value = '';
+    $('#age').value = '';
+    $('#weight').value = '';
+    $('#vaccinated').value = 'Yes';
+    petHint.textContent = 'Enter new pet details below.';
+    $('#petName').focus();
+  });
+
+  // ---------- Booking submission helpers ----------
+  function toCents(x) {
+    return Math.round(Number(x || 0) * 100);
+  }
+
+  // createOrGetPetId: use existing pet or create a new one
+  async function createOrGetPetId() {
+    // If a saved pet is selected, use that
+    if (petSelect && petSelect.value) {
+      try {
+        const obj = JSON.parse(petSelect.value);
+        if (obj && obj.id) return obj.id;
+      } catch (_) {}
+    }
+
+    // Otherwise, create a new pet from the form fields
+    const name = $('#petName').value.trim();
+    if (!name) {
+      throw new Error('Please enter your pet’s name.');
+    }
+
+    const payload = {
+      name,
+      species: $('#species').value,
+      breed: $('#breed').value || null,
+      age: $('#age').value || null,
+      weight: $('#weight').value || null,
+      vaccinated: $('#vaccinated').value === 'Yes'
+    };
+
+    const res = await fetch('/api/user/pets', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify(payload)
+    });
+    const data = await res.json();
+    if (!res.ok || !data.ok || !data.pet) {
+      throw new Error(data.error || 'Could not save pet');
+    }
+    return data.pet.id;
+  }
+
+  // Create booking row in DB
+  async function createBookingOnServer(petId, totals, addons) {
+    const svcOpt = serviceSel.selectedOptions[0];
+
+    const body = {
+      service_id: Number(svcOpt.value),
+      pet_id: petId,
+      booking_date: dateInp.value,
+      booking_time: timeInp.value,
+      subtotal: totals.subtotal,
+      tax: totals.tax,
+      total: totals.total,
+      addons,  // array of { id, label, price }
+      notes: $('#notes') ? $('#notes').value : ''
+    };
+
+    const res = await fetch('/api/user/bookings', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.ok || !data.booking) {
+      throw new Error(data.error || 'Could not create booking');
+    }
+    return data.booking; // { id, ... }
+  }
+
+  // ---------- Booking submission ----------
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    if (!$('#petName').value.trim()) {
+      hint.textContent = 'Please enter your pet’s name.';
+      hint.classList.remove('ok');
+      hint.classList.add('warn');
+      return;
+    }
+
+    if (!form.checkValidity()) {
+      hint.textContent = 'Please fill all required fields and agree to the Terms.';
+      hint.classList.remove('ok');
+      hint.classList.add('warn');
+      form.reportValidity();
+      return;
+    }
+
+    const svcOpt = serviceSel.selectedOptions[0];
+    if (!svcOpt || !svcOpt.value) {
+      hint.textContent = 'Please select a service.';
+      hint.classList.remove('ok');
+      hint.classList.add('warn');
+      return;
+    }
+
+    try {
+      hint.textContent = 'Creating your booking...';
+      hint.classList.remove('warn', 'ok');
+
+      const { items: addons, total: addonsTotal } = getAddonsSelection();
+      const basePrice = Number(svcOpt.dataset.price || 0);
+      const subtotal  = basePrice + addonsTotal;
+      const tax       = Number((subtotal * TAX_RATE).toFixed(2));
+      const total     = subtotal + tax;
+
+      // 1) Ensure we have a pet_id
+      const petId = await createOrGetPetId();
+
+      // 2) Create booking in DB
+      const bookingRow = await createBookingOnServer(
+        petId,
+        { subtotal, tax, total },
+        addons
+      );
+
+      // 3) Save booking info for payment + checkout pages
+      const bookingForClient = {
+        bookingId: bookingRow.id,
+        serviceLabel: svcOpt.textContent.split(' — ')[0] || 'Service',
+        date: `${dateInp.value} ${timeInp.value}`,
+        subtotal,
+        tax,
+        total,
+        addons,
+        addons_total: addonsTotal,
+        ownerName: ownerName.value.trim(),
+        ownerEmail: ownerEmail.value.trim(),
+        ownerPhone: ownerPhone.value.trim(),
+        petName: $('#petName').value.trim()
+      };
+
+      sessionStorage.setItem('booking', JSON.stringify(bookingForClient));
+
+      const EXP_MIN = 15;
+      const exp = Date.now() + EXP_MIN * 60 * 1000;
+      sessionStorage.setItem('bookingExpiresAt', String(exp));
+
+      // 4) Go to payment page
+      window.location.href = 'payment.html';
+    } catch (err) {
+      console.error('Booking submit error:', err);
+      hint.textContent = '❌ ' + (err.message || 'Could not create booking. Please try again.');
+      hint.classList.remove('ok');
+      hint.classList.add('warn');
+    }
+  });
+
+  // ---------- Init on page load ----------
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Prevent past dates
+    const today = new Date();
+    const pad = n => String(n).padStart(2, '0');
+    dateInp.min = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+
+    // 1) Require login & auto-fill owner info
+    const user = await loadUserProfile();
+    if (!user) return; // we redirected to sign-in
+
+    // 2) Load pets, services, addons
+    await Promise.all([
+      loadUserPets(),
+      loadServices(),
+      loadAddons()
+    ]);
+
+    // 3) Wire up estimate recalculation when service changes
+    serviceSel.addEventListener('change', recalcEstimate);
+    recalcEstimate();
+
+    // 4) Mobile nav toggle (if you use it)
+    const burger = document.querySelector('.paws-nav-toggle');
+    const menu   = document.getElementById('site-menu');
+    if (burger && menu) {
+      burger.addEventListener('click', () => {
+        const open = menu.classList.toggle('open');
+        burger.setAttribute('aria-expanded', String(open));
+      });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

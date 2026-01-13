@@ -1,0 +1,55 @@
+{
+  "name": "group-project-apollotheg0d",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www",
+    "setup": "bash scripts/quick-setup.sh",
+    "setup:quick": "node scripts/setup-db.js && node db/seed.js",
+    "db:init": "node scripts/setup-db.js",
+    "db:setup": "bash scripts/setup-db.sh",
+    "db:start": "echo 'PostgreSQL is running locally - no action needed'",
+    "db:stop": "echo 'PostgreSQL is running locally - no action needed'",
+    "db:restart": "echo 'PostgreSQL is running locally - no action needed'",
+    "db:logs": "echo 'Use system logs: sudo journalctl -u postgresql'",
+    "db:shell": "psql -U addiction_user -d pawsco_dev -h 127.0.0.1",
+    "db:reset": "npm run db:migrate",
+    "db:migrate": "node db/seed.js",
+    "db:clean": "rm -rf db/postgres_data",
+    "db:seed": "node db/seed.js",
+    "db:check-mode": "echo 'Using local PostgreSQL'",
+    "db:health": "curl http://localhost:3001/health/db || echo '❌ Server not running'",
+    "db:diagnose": "bash scripts/diagnose.sh"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1",
+    "cookie-parser": "~1.4.4",
+    "debug": "~2.6.9",
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-ejs-layouts": "^2.5.1",
+    "express-session": "^1.18.2",
+    "http-errors": "~1.6.3",
+    "morgan": "^1.10.1",
+    "pg": "^8.16.3"
+  },
+  "description": "**Milestones 2–4**",
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CSC317-F25/group-project-ApolloTheG0d.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/CSC317-F25/group-project-ApolloTheG0d/issues"
+  },
+  "homepage": "https://github.com/CSC317-F25/group-project-ApolloTheG0d#readme",
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Confirm Booking | Paws &amp; Company</title>
+
+<link href="stylesheets/main.css" rel="stylesheet"/>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+
+<style>
+  :root{
+    --border:#d0d0d0; --muted:#555; --text:#000; --radius:16px;
+    --input-border:#cfcfcf; --input-focus:#8ab4ff;
+    --btn:#123155; --btn-border:#274061; --btn-hover:#1a457a;
+    --card-bg:#ffffff;
+  }
+
+  body{
+    margin:0;
+    font-family:Poppins,system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+    background:
+      radial-gradient(1000px 600px at 10% -10%, #f5f5dc 0%, transparent 60%),
+      linear-gradient(180deg, #f5f5dc 0%, #f5f5dc 100%);
+    color:var(--text);
+  }
+
+  .paws-header{ background:#fff; border-bottom:1px solid #ddd; box-shadow:0 2px 4px rgba(0,0,0,.08); }
+  .paws-header h1{ margin:0; padding:14px 16px; font-size:22px; }
+  .paws-header a{ color:#000; text-decoration:none; }
+  .paws-nav ul{ list-style:none; margin:0; padding:0 16px 14px; display:flex; gap:28px; flex-wrap:wrap; }
+  .paws-nav a{ font-weight:600; }
+  .paws-nav a:hover{ color:#1a457a; }
+
+  .paws-confirm{ max-width:980px; margin:32px auto; padding:0 16px; }
+
+  .paws-confirm-hero.hero-box{
+    background:var(--card-bg);
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    padding:24px;
+    margin-bottom:30px;
+  }
+  .paws-confirm-hero.hero-box h1{ margin:0; color:#123155; font-size:26px; }
+  .paws-confirm-hero.hero-box p{ color:#333; margin-top:8px; font-size:16px; }
+
+  .paws-confirm-card{
+    background:#ffffff;
+    border:1px solid var(--border);
+    border-radius:var(--radius);
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    padding:24px;
+  }
+
+  h2, h3{ color:#123155; margin-top:0; }
+
+  .paws-summary{ display:grid; gap:10px; }
+  .paws-line{ display:flex; justify-content:space-between; align-items:center; color:#000; }
+  .paws-line strong{ color:#000; }
+  .paws-hr{ height:1px; background:#ccc; margin:12px 0; }
+  .paws-total{ font-weight:700; font-size:18px; color:#000; }
+
+  .booking-details{
+    background:#fff; border:1px solid #ccc; border-radius:var(--radius);
+    padding:16px; margin-top:16px; box-shadow:0 2px 6px rgba(0,0,0,.08);
+  }
+  .booking-details h3{
+    color:#123155; font-size:18px; border-bottom:1px solid #ddd; padding-bottom:6px; margin-top:0;
+  }
+  .details-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:8px 20px; margin-top:10px; font-size:15px; color:#000;
+  }
+
+  .form-grid{ display:grid; gap:12px; grid-template-columns:1fr 1fr; }
+  @media (max-width:720px){ .form-grid{ grid-template-columns:1fr; } }
+  label{ display:block; margin:0 0 6px; color:#000; font-weight:600; }
+  input, select{
+    width:100%; padding:10px 12px; border:1px solid var(--input-border);
+    border-radius:var(--radius); outline:none; background:#fff; color:#000; font-size:15px;
+  }
+  input:focus, select:focus{ border-color:var(--input-focus); box-shadow:0 0 0 3px rgba(138,180,255,.25); }
+
+  .card-logos, .xpay-row, .bnpl-row{
+    display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:12px;
+  }
+  .logo-badge, .xbtn, .bnpl-badge{
+    height:50px; min-width:120px; border:1px solid #ccc; border-radius:var(--radius);
+    background:#fff; display:flex; align-items:center; justify-content:center;
+    padding:6px 12px; box-shadow:0 2px 5px rgba(0,0,0,.08); cursor:pointer;
+  }
+  .logo-badge img, .xbtn img, .bnpl-badge img{ height:28px; width:auto; object-fit:contain; display:block; }
+  .xbtn{ gap:10px; font-weight:700; color:#000; justify-content:center; text-align:center; }
+
+  .paws-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+  .paws-btn{
+    background:#123155; color:#fff; border:1px solid #274061; border-radius:var(--radius);
+    padding:10px 16px; font-weight:700; cursor:pointer; text-decoration:none;
+  }
+  .paws-btn.secondary{ background:#f5f5f5; color:#000; border:1px solid #ccc; }
+  .paws-btn:hover{ background:#1a457a; }
+
+  .help{ color:#666; font-size:13px; margin-top:6px; }
+
+  /* ... your existing styles ... */
+  input.input-error, select.input-error {
+    border-color:#c0392b !important;
+    box-shadow:0 0 0 1px #c0392b33;
+  }
+</style>
+</head>
+
+<body id="paws-services">
+<div aria-hidden="true" class="paws-background"></div>
+
+<header class="paws-header">
+  <h1><a href="index.html">🐾 Paws &amp; Company</a></h1>
+  <nav class="paws-nav">
+    <ul id="site-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="services.html">Services</a></li>
+      <li><a href="appointmentForbooking.html">Appointments</a></li>
+      <li><a href="meetAndgreet.html">Meet &amp; Greet</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="contact.html">Contact</a></li>
+      <li><a href="signIn.html">Sign In</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="paws-confirm">
+  <section class="paws-confirm-hero hero-box">
+    <h1>Confirm your booking</h1>
+    <p>Review your details, then select a payment option.</p>
+  </section>
+
+  <section class="paws-confirm-card">
+    <h2>Appointment Summary</h2>
+
+    <div id="timerBox" style="
+      margin-top: 6px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      border-radius: 12px;
+      font-weight: 600;
+      color: #856404;
+      display: inline-block;">
+      Your session expires in: <span id="timer">15:00</span>
+    </div>
+
+    <div id="summary" class="paws-summary">
+      <div class="paws-line"><span>Service</span><strong id="sumService">—</strong></div>
+      <div class="paws-line"><span>Add-ons</span><strong id="sumAddons">$0.00</strong></div>
+      <div class="paws-line"><span>Date</span><strong id="sumDate">—</strong></div>
+      <div class="paws-line"><span>Tax (SF sales tax = 8.625%)</span><strong id="sumTax">$0.00</strong></div>
+      <div class="paws-line"><span>Subtotal</span><strong id="sumSubtotal">$0.00</strong></div>
+      <div class="paws-hr"></div>
+      <div class="paws-line paws-total"><span>Total</span><span id="sumTotal" class="amount">$0.00</span></div>
+    </div>
+
+    <div id="addonsList" style="margin-top:10px;"></div>
+
+    <div class="booking-details">
+      <h3>Booking Details</h3>
+      <div class="details-grid" id="detailsGrid">
+        <div><strong>Customer Name:</strong> —</div>
+        <div><strong>Pet Name:</strong> —</div>
+        <div><strong>Email:</strong> —</div>
+        <div><strong>Contact:</strong> —</div>
+      </div>
+    </div>
+
+    <!-- One form for card + billing + submit -->
+    <form action="checkout.html" method="get">
+      <h2 style="margin-top:20px">Card Payment</h2>
+      <div class="card-logos">
+        <span class="logo-badge"><img src="https://www.citypng.com/public/uploads/preview/hd-visa-payment-logo-png-7017516947777256ndfrewd52.png" alt="Visa"></span>
+        <span class="logo-badge"><img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard"></span>
+        <span class="logo-badge"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/American_Express_logo_%282018%29.svg/2052px-American_Express_logo_%282018%29.svg.png" alt="AmEx"></span>
+        <span class="logo-badge"><img src="https://1000logos.net/wp-content/uploads/2020/11/Discover-Logo.jpg" alt="Discover"></span>
+      </div>
+
+      <div class="form-grid" style="margin-top:8px">
+  <div>
+    <label>Card number</label>
+    <input
+      id="cardNumber"
+      type="text"
+      placeholder="1234 1234 1234 1234"
+      inputmode="numeric"
+      autocomplete="cc-number"
+      pattern="^(\d{4} ?){3}\d{4}$"
+      required
+    >
+  </div>
+  <div>
+    <label>Name on card</label>
+    <input id="cardName" type="text" placeholder="Full name" autocomplete="cc-name" required>
+  </div>
+  <div>
+    <label>Expiry (MM/YY)</label>
+    <input
+      id="expiry"
+      type="text"
+      placeholder="MM/YY"
+      inputmode="numeric"
+      autocomplete="cc-exp"
+      maxlength="5"
+      pattern="^(0[1-9]|1[0-2])\/\d{2}$"
+      required
+    >
+  </div>
+  <div>
+    <label>CVC</label>
+    <input
+      id="cvc"
+      type="text"
+      placeholder="123"
+      inputmode="numeric"
+      autocomplete="cc-csc"
+      maxlength="4"
+      pattern="^[0-9]{3,4}$"
+      required
+    >
+  </div>
+  <div>
+    <label>Zip Code</label>
+    <input
+      id="cardZip"
+      type="text"
+      placeholder="00000"
+      inputmode="numeric"
+      required
+    >
+  </div>
+</div>
+
+      <!-- Express Payment -->
+      <h2 style="margin-top:22px">Express Payment</h2>
+      <div class="xpay-row">
+        <button class="xbtn" type="button"><img src="https://developer.apple.com/news/images/og/apple-pay-og-twitter.jpg" alt="Apple Pay"><span>Apple Pay</span></button>
+        <button class="xbtn" type="button"><img src="https://developers.google.com/static/pay/api/images/brand-guidelines/google-pay-mark.png" alt="Google Pay"><span>Google Pay</span></button>
+        <button class="xbtn" type="button"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSmUM6O8WTViA_U_eHkkl8ZQCiPKV7u8Xrsow&s" alt="Samsung Pay"><span>Samsung Pay</span></button>
+        <button class="xbtn" type="button"><img src="https://1000logos.net/wp-content/uploads/2017/05/Paypal-Logo-2022.png" alt="PayPal"><span>PayPal</span></button>
+      </div>
+
+      <!-- Pay Later -->
+      <h2 style="margin-top:22px">Pay in 4 / Pay Later</h2>
+      <div class="bnpl-row">
+        <span class="bnpl-badge"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Klarna_Payment_Badge.svg/1280px-Klarna_Payment_Badge.svg.png" alt="Klarna"></span>
+        <span class="bnpl-badge"><img src="https://mma.prnewswire.com/media/1224081/Afterpay_Mint_Logo.jpg?p=facebook" alt="Afterpay"></span>
+        <span class="bnpl-badge"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/ff/Affirm_logo.svg/1200px-Affirm_logo.svg.png" alt="Affirm"></span>
+        <span class="bnpl-badge"><img src="https://zip.co/nz/wp-content/uploads/2021/08/Badge_300-x-135_Main.svg" alt="Zip"></span>
+      </div>
+
+      <!-- Billing Address -->
+      <h2 style="margin-top:22px">Billing Address</h2>
+      <div class="form-grid">
+        <div>
+          <label>First name</label>
+          <input id="firstName" type="text" placeholder="First name" required>
+        </div>
+        <div>
+          <label>Last name</label>
+          <input id="lastName" type="text" placeholder="Last name" required>
+        </div>
+        <div style="grid-column:1/-1">
+          <label>Address line 1</label>
+          <input id="address1" type="text" placeholder="123 Market St" required>
+        </div>
+        <div style="grid-column:1/-1">
+          <label>Address line 2 <span class="help">(optional)</span></label>
+          <input id="address2" type="text" placeholder="Apt, suite, etc.">
+        </div>
+        <div>
+          <label>City</label>
+          <input id="city" type="text" placeholder="San Francisco" required>
+        </div>
+        <div>
+          <label>State</label>
+          <select id="state" required>
+            <option value="" selected disabled>Select…</option>
+            <option>AL</option><option>AK</option><option>AZ</option><option>AR</option><option>CA</option><option>CO</option>
+            <option>CT</option><option>DE</option><option>FL</option><option>GA</option><option>HI</option><option>IA</option>
+            <option>ID</option><option>IL</option><option>IN</option><option>KS</option><option>KY</option><option>LA</option>
+            <option>MA</option><option>MD</option><option>ME</option><option>MI</option><option>MN</option><option>MO</option>
+            <option>MS</option><option>MT</option><option>NC</option><option>ND</option><option>NE</option><option>NH</option>
+            <option>NJ</option><option>NM</option><option>NV</option><option>NY</option><option>OH</option><option>OK</option>
+            <option>OR</option><option>PA</option><option>RI</option><option>SC</option><option>SD</option><option>TN</option>
+            <option>TX</option><option>UT</option><option>VA</option><option>VT</option><option>WA</option><option>WI</option>
+            <option>WV</option><option>WY</option>
+          </select>
+        </div>
+        <div>
+          <label>ZIP code</label>
+          <input id="zip" type="text" placeholder="94105" required>
+        </div>
+        <div>
+          <label>Country</label>
+          <input type="text" value="United States" readonly>
+        </div>
+      </div>
+
+      <div class="paws-actions">
+        <a class="paws-btn secondary" href="appointmentForbooking.html">
+          <i class="fa-solid fa-arrow-left"></i> Back
+        </a>
+          <button id="confirmPaymentBtn" class="paws-btn-primary">
+            <i class="fa-solid fa-credit-card"></i> Pay now
+          </button>
+          <p id="paymentMessage" class="message"></p>
+      </div>
+    </form>
+  </section>
+</main>
+
+<footer>
+  <p>© 2025 Paws &amp; Company | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p>
+</footer>
+
+<script>
+(async function () {
+  const fmt = n => `$${Number(n || 0).toFixed(2)}`;
+
+  // ---------- DOM helpers ----------
+  const msgEl = document.getElementById('paymentMessage');
+  function showMsg(text, type) {
+    if (!msgEl) {
+      if (text) alert(text);
+      return;
+    }
+    msgEl.textContent = text;
+    msgEl.className   = 'message ' + (type || '');
+  }
+
+  const byId = id => document.getElementById(id);
+
+  function getQueryParam(name) {
+    const params = new URLSearchParams(window.location.search);
+    return params.get(name);
+  }
+
+  // ---------- Date / time helpers ----------
+  function formatBookingDate(dateStr) {
+    if (!dateStr) return '—';
+    const s = String(dateStr);
+    const match = s.match(/^(\d{4})-(\d{2})-(\d{2})/); // "YYYY-MM-DD"
+    if (!match) return s;
+
+    const year  = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const day   = parseInt(match[3], 10);
+    if (isNaN(year) || isNaN(month) || isNaN(day)) return s;
+
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const monthLabel = months[month - 1] || match[2];
+
+    return `${monthLabel} ${day}, ${year}`;
+  }
+
+  // As requested: just show raw stored time
+  function formatBookingTime(timeStr) {
+    if (!timeStr) return '';
+    return String(timeStr);
+  }
+
+  // ---------- Build "booking" object from API booking ----------
+  function buildBookingFromApi(apiBooking, profileUser) {
+    const b = apiBooking || {};
+    const u = profileUser || {};
+
+    const first =
+      b.customer_first_name ||
+      b.user_first_name ||
+      u.first_name ||
+      '';
+    const last =
+      b.customer_last_name ||
+      b.user_last_name ||
+      u.last_name ||
+      '';
+
+    const ownerName  = (first + ' ' + last).trim() || 'Guest';
+    const ownerEmail = b.customer_email || b.email || u.email || '';
+    const ownerPhone = b.customer_phone || b.phone || u.phone || '';
+
+    const total = Number(b.total || 0);
+    const tax   = (typeof b.tax === 'number')
+      ? Number(b.tax)
+      : total * 0.08625;
+    const subtotal = (typeof b.subtotal === 'number')
+      ? Number(b.subtotal)
+      : (total - tax);
+
+    let addons_total = 0;
+    let addons = [];
+    if (Array.isArray(b.addons)) {
+      addons = b.addons.map(a => {
+        const price = Number(a.price_at_purchase || a.price || 0);
+        addons_total += price;
+        return {
+          label: a.name,
+          price
+        };
+      });
+    }
+
+    const dateLabel = formatBookingDate(b.booking_date);
+    const timeLabel = formatBookingTime(b.booking_time);
+    const fullDate  = (dateLabel && timeLabel)
+      ? `${dateLabel} ${timeLabel}`
+      : dateLabel || '—';
+
+    return {
+      bookingId: b.id,
+      serviceLabel: b.service_name || 'Service',
+      date: fullDate,
+      subtotal,
+      tax,
+      total,
+      addons_total,
+      addons,
+      ownerName,
+      ownerEmail,
+      ownerPhone,
+      petName: b.pet_name || ''
+    };
+  }
+
+  // ---------- 1. Try to load booking from sessionStorage ----------
+  let booking = null;
+  let lastPayment = null;
+
+  try {
+    const rawBooking = sessionStorage.getItem('booking');
+    const rawLastPay = sessionStorage.getItem('lastPayment');
+    if (rawBooking) booking = JSON.parse(rawBooking);
+    if (rawLastPay) lastPayment = JSON.parse(rawLastPay);
+  } catch (e) {
+    console.warn('Could not parse stored data', e);
+  }
+
+  // ---------- 2. If missing booking, use ?bookingId= + backend ----------
+  const bookingIdFromUrl = getQueryParam('bookingId');
+  if ((!booking || !booking.bookingId) && bookingIdFromUrl) {
+    try {
+      const [bookRes, profRes] = await Promise.all([
+        fetch('/api/user/bookings'),
+        fetch('/api/user/profile').catch(() => null)
+      ]);
+
+      if (bookRes.status === 401) {
+        const redirect = encodeURIComponent(window.location.pathname + window.location.search);
+        window.location.href = `/signIn.html?redirect=${redirect}`;
+        return;
+      }
+
+      const bookData = await bookRes.json();
+      let userProfile = null;
+
+      if (profRes && profRes.ok) {
+        const profJson = await profRes.json();
+        if (profJson.ok && profJson.user) userProfile = profJson.user;
+      }
+
+      if (bookData.ok && Array.isArray(bookData.bookings)) {
+        const apiBooking = bookData.bookings.find(
+          bk => String(bk.id) === String(bookingIdFromUrl)
+        );
+        if (apiBooking) {
+          booking = buildBookingFromApi(apiBooking, userProfile);
+          sessionStorage.setItem('booking', JSON.stringify(booking));
+        }
+      }
+    } catch (err) {
+      console.error('Error loading booking for payment page:', err);
+    }
+  }
+
+  // ---------- 3. If still no booking, show message & abort ----------
+  if (!booking) {
+    showMsg('No active booking found. Please start a new appointment.', 'error');
+    return;
+  }
+
+  // ---------- 4. If booking missing guest info, patch from profile ----------
+  if (!booking.ownerName || !booking.ownerEmail || !booking.ownerPhone) {
+    try {
+      const profRes = await fetch('/api/user/profile');
+      if (profRes.ok) {
+        const profJson = await profRes.json();
+        if (profJson.ok && profJson.user) {
+          const u = profJson.user;
+          const first = u.first_name || '';
+          const last  = u.last_name || '';
+          if (!booking.ownerName)  booking.ownerName  = (first + ' ' + last).trim() || 'Guest';
+          if (!booking.ownerEmail) booking.ownerEmail = u.email || booking.ownerEmail || '';
+          if (!booking.ownerPhone) booking.ownerPhone = u.phone || booking.ownerPhone || '';
+          sessionStorage.setItem('booking', JSON.stringify(booking));
+        }
+      }
+    } catch (err) {
+      console.warn('Could not patch guest info from profile:', err);
+    }
+  }
+
+  // ---------- 5. Fill Summary + Details ----------
+ // Service + service price in one line
+if (booking.serviceLabel) {
+  // Prefer explicit servicePrice; otherwise derive it from subtotal - addons
+  const servicePrice =
+    booking.servicePrice != null
+      ? Number(booking.servicePrice)
+      : Number(booking.subtotal || 0) - Number(booking.addons_total || 0);
+
+  if (!isNaN(servicePrice) && servicePrice > 0) {
+    byId('sumService').textContent =
+      `${booking.serviceLabel} — ${fmt(servicePrice)}`;
+  } else {
+    byId('sumService').textContent = booking.serviceLabel;
+  }
+} else {
+  byId('sumService').textContent = 'Service';
+}
+
+byId('sumDate').textContent     = booking.date || '—';
+byId('sumSubtotal').textContent = fmt(booking.subtotal);
+byId('sumTax').textContent      = fmt(booking.tax);
+byId('sumAddons').textContent   = fmt(booking.addons_total || 0);
+byId('sumTotal').textContent    = fmt(booking.total);
+
+  const grid = byId('detailsGrid');
+  if (grid) {
+    grid.innerHTML = `
+      <div><strong>Customer Name:</strong> ${booking.ownerName || '—'}</div>
+      <div><strong>Pet Name:</strong> ${booking.petName || '—'}</div>
+      <div><strong>Email:</strong> ${booking.ownerEmail || '—'}</div>
+      <div><strong>Contact:</strong> ${booking.ownerPhone || '—'}</div>
+    `;
+  }
+
+  if (Array.isArray(booking.addons) && booking.addons.length) {
+  const listHost = byId('addonsList');
+  if (listHost) {
+    listHost.innerHTML = `
+      <h3 style="margin:12px 0 6px">Selected Add-ons</h3>
+      <ul style="margin:0 0 0 18px; padding:0;">
+        ${booking.addons.map(a => {
+          const label = a.label || a.name || 'Add-on';
+          const price = Number(a.price || 0).toFixed(2);
+          return `<li>${label} (+$${price})</li>`;
+        }).join('')}
+      </ul>
+    `;
+  }
+}
+
+
+  // ---------- 6. 15-minute timer (unchanged) ----------
+  let expiresAt = sessionStorage.getItem('bookingExpiresAt');
+  if (!expiresAt) {
+    expiresAt = Date.now() + 15 * 60 * 1000;
+    sessionStorage.setItem('bookingExpiresAt', String(expiresAt));
+  } else {
+    expiresAt = Number(expiresAt);
+  }
+
+  const timerEl  = byId('timer');
+  const timerBox = byId('timerBox');
+
+  function updateTimer() {
+    if (!timerEl || !timerBox) return;
+
+    const now  = Date.now();
+    const diff = expiresAt - now;
+
+    if (diff <= 0) {
+      timerEl.textContent       = '00:00';
+      timerBox.style.background = '#f8d7da';
+      timerBox.style.color      = '#721c24';
+      timerBox.style.borderColor= '#f5c6cb';
+      timerBox.textContent      = '⚠️ Session expired. Please restart your booking.';
+
+      const formEl = document.querySelector('form');
+      if (formEl) {
+        formEl.querySelectorAll('input,button,select').forEach(el => { el.disabled = true; });
+      }
+      return;
+    }
+
+    const minutes = Math.floor(diff / 60000);
+    const seconds = Math.floor((diff % 60000) / 1000);
+    timerEl.textContent =
+      `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+
+    requestAnimationFrame(updateTimer);
+  }
+  updateTimer();
+
+  // ---------- 7. Form fields & helpers (unchanged from your version) ----------
+  function pickInput(id, placeholder) {
+    return document.getElementById(id) ||
+           document.querySelector(`input[placeholder="${placeholder}"]`);
+  }
+
+  const fields = {
+    cardNumber: pickInput('cardNumber','1234 1234 1234 1234'),
+    cardName:   pickInput('cardName','Full name'),
+    expiry:     pickInput('expiry','MM/YY'),
+    cvc:        pickInput('cvc','123'),
+    cardZip:    pickInput('cardZip','00000'),
+    firstName:  pickInput('firstName','First name'),
+    lastName:   pickInput('lastName','Last name'),
+    address1:   pickInput('address1','123 Market St'),
+    address2:   document.getElementById('address2') || document.querySelector('input[placeholder="Apt, suite, etc."]'),
+    city:       pickInput('city','San Francisco'),
+    state:      document.getElementById('state') || document.querySelector('select[required]'),
+    zip:        pickInput('zip','94105')
+  };
+
+  if (fields.cardNumber) {
+    fields.cardNumber.addEventListener('input', () => {
+      let digits = fields.cardNumber.value.replace(/\D/g, '').slice(0, 16);
+      const groups = [];
+      for (let i = 0; i < digits.length; i += 4) {
+        groups.push(digits.slice(i, i + 4));
+      }
+      fields.cardNumber.value = groups.join(' ');
+    });
+  }
+
+  if (fields.expiry) {
+    fields.expiry.addEventListener('input', () => {
+      let digits = fields.expiry.value.replace(/\D/g, '').slice(0, 4);
+      if (digits.length >= 3) {
+        fields.expiry.value = digits.slice(0, 2) + '/' + digits.slice(2);
+      } else {
+        fields.expiry.value = digits;
+      }
+      fields.expiry.setCustomValidity('');
+    });
+
+    fields.expiry.addEventListener('blur', () => {
+      const val = fields.expiry.value;
+      const ok  = /^(0[1-9]|1[0-2])\/\d{2}$/.test(val);
+      if (!ok) {
+        fields.expiry.setCustomValidity('Use MM/YY format, e.g. 04/27');
+      } else {
+        fields.expiry.setCustomValidity('');
+      }
+    });
+  }
+
+  function toCents(x) {
+    return Math.round(Number(x || 0) * 100);
+  }
+
+  function validateBilling() {
+    const requiredIds = ['firstName','lastName','address1','city','state','zip'];
+    let ok = true;
+
+    requiredIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      if (!el.value.trim()) {
+        ok = false;
+        el.classList.add('input-error');
+      } else {
+        el.classList.remove('input-error');
+      }
+    });
+
+    if (!ok) {
+      showMsg('Please fill in all billing address fields before paying.', 'error');
+    }
+    return ok;
+  }
+
+  function buildBasePayload() {
+    const nameParts = (booking.ownerName || '').trim().split(' ');
+    const first = nameParts[0] || 'First';
+    const last  = nameParts.slice(1).join(' ') || 'Last';
+
+    return {
+      booking_id: booking.bookingId || null,
+      service_name: booking.serviceLabel || 'Service',
+      service_date: booking.date || new Date().toISOString().slice(0, 10),
+      subtotal_cents: toCents(booking.subtotal),
+      tax_cents:      toCents(booking.tax),
+      total_cents:    toCents(booking.total),
+      currency: 'USD',
+      customer: {
+        full_name: booking.ownerName || 'Guest',
+        email: booking.ownerEmail || 'guest@example.com',
+        phone: booking.ownerPhone || ''
+      },
+      address: {
+        first_name: fields.firstName?.value || first,
+        last_name:  fields.lastName?.value  || last,
+        line1:      fields.address1?.value || '123 Market St',
+        line2:      fields.address2?.value || '',
+        city:       fields.city?.value     || 'San Francisco',
+        state:      fields.state?.value    || 'CA',
+        postal_code:fields.zip?.value      || '94105',
+        country: 'US'
+      }
+    };
+  }
+
+  async function checkout(provider, useCardFields) {
+    const expTs = Number(sessionStorage.getItem('bookingExpiresAt'));
+    if (expTs && Date.now() > expTs) {
+      showMsg('Your payment session has expired. Please restart your booking.', 'error');
+      return;
+    }
+
+    if (!validateBilling()) return;
+
+    const base = buildBasePayload();
+
+    const card = useCardFields ? {
+      name:   fields.cardName?.value    || booking.ownerName || 'Guest',
+      number: fields.cardNumber?.value  || '4242 4242 4242 4242',
+      expiry: fields.expiry?.value      || '12/30',
+      cvc:    fields.cvc?.value         || '123',
+      zip:    fields.cardZip?.value     || fields.zip?.value || '94105'
+    } : {
+      name:   booking.ownerName || 'Guest',
+      number: '4242 4242 4242 4242',
+      expiry: '12/30',
+      cvc:    '123',
+      zip:    fields.zip?.value || '94105'
+    };
+
+    const payload = {
+      ...base,
+      card,
+      provider: provider || 'card',
+      expires_at: expTs || null
+    };
+
+    try {
+      showMsg('Processing payment…', 'info');
+
+      const res = await fetch('/api/payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); }
+      catch (e) {
+        console.error('Non-JSON response from /api/payment:', text);
+        showMsg('Server returned an unexpected response. Please try again.', 'error');
+        return;
+      }
+
+      if (!res.ok || data.ok === false) {
+        const errMsg =
+          data.error ||
+          (data.errors || []).map(e => `${e.param || e.path}: ${e.msg}`).join('\n') ||
+          'Payment failed. Please try again.';
+        showMsg(errMsg, 'error');
+        return;
+      }
+
+      // Mark booking paid client-side
+      booking.payment_status = 'paid';
+      sessionStorage.setItem('booking', JSON.stringify(booking));
+
+      const last4Digits = card.number.replace(/\D/g,'').slice(-4) || null;
+      sessionStorage.setItem('lastPayment', JSON.stringify({
+        payment_id: data.payment_id || null,
+        provider: payload.provider,
+        card_last4: last4Digits
+      }));
+
+      sessionStorage.removeItem('bookingExpiresAt');
+
+      showMsg('✅ Payment successful! Redirecting…', 'success');
+      window.location.href = data.redirect_url || 'checkout.html';
+    } catch (err) {
+      console.error('Payment error:', err);
+      showMsg('Network error: ' + err.message, 'error');
+    }
+  }
+
+  // ---------- Wire up form / buttons ----------
+  const form = document.querySelector('form');
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      checkout('card', true);
+    });
+  }
+
+  const expressMap = new Map([
+    ['Apple Pay',  'apple_pay'],
+    ['Google Pay', 'google_pay'],
+    ['Samsung Pay','samsung_pay'],
+    ['PayPal',     'paypal']
+  ]);
+
+  document.querySelectorAll('.xbtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const label = btn.textContent.trim();
+      const provider = expressMap.get(label) || 'express';
+      checkout(provider, false);
+    });
+  });
+
+  const bnplMap = new Map([
+    ['Klarna','klarna'],
+    ['Afterpay','afterpay'],
+    ['Affirm','affirm'],
+    ['Zip','zip']
+  ]);
+
+  document.querySelectorAll('.bnpl-badge').forEach(badge => {
+    badge.style.cursor = 'pointer';
+    badge.addEventListener('click', () => {
+      const alt = badge.querySelector('img')?.alt || '';
+      const key = Array.from(bnplMap.keys()).find(k =>
+        alt.toLowerCase().includes(k.toLowerCase())
+      ) || 'BNPL';
+
+      checkout(bnplMap.get(key) || 'bnpl', false);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,1023 @@
+<!-- filepath: /home/user/code/group-project-ApolloTheG0d/views/admin.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard | Paws & Company</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', system-ui, sans-serif;
+      background: #f5f5f5;
+    }
+
+    .admin-header {
+      background: #111827;
+      color: #fff;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .15);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .admin-container {
+      max-width: 1400px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+      border-left: 4px solid #2a7ae2;
+    }
+
+    .stat-card h3 {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #111827;
+    }
+
+    .stat-card .icon {
+      font-size: 2.5rem;
+      color: #2a7ae2;
+      opacity: 0.2;
+      float: right;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 1rem 1.5rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      transition: all 0.2s;
+    }
+
+    .tab-btn.active {
+      color: #2a7ae2;
+      border-bottom-color: #2a7ae2;
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, .08);
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-family: 'Poppins', system-ui, sans-serif;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #2a7ae2;
+      box-shadow: 0 0 0 3px rgba(42, 122, 226, 0.1);
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: #2a7ae2;
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: #1f5fc1;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    .btn-danger {
+      background: #dc2626;
+      color: #fff;
+    }
+
+    .btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .btn-success {
+      background: #10b981;
+      color: #fff;
+    }
+
+    .btn-success:hover {
+      background: #059669;
+    }
+
+    .btn-sm {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.875rem;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin: 0 0.25rem;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .table th {
+      background: #f3f4f6;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .table td {
+      padding: 1rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .table tbody tr:hover {
+      background: #f9fafb;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .badge.success {
+      background: #10b98122;
+      color: #065f46;
+    }
+
+    .badge.warning {
+      background: #fcd34d44;
+      color: #78350f;
+    }
+
+    .badge.danger {
+      background: #dc262622;
+      color: #991b1b;
+    }
+
+    .badge.secondary {
+      background: #6b728022;
+      color: #374151;
+    }
+
+    .badge.danger {
+      background: #fecaca44;
+      color: #7f1d1d;
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+    }
+
+    .message.show {
+      display: block;
+    }
+
+    .message.success {
+      background: #10b98122;
+      color: #065f46;
+      border: 1px solid #10b98155;
+    }
+
+    .message.error {
+      background: #fecaca44;
+      color: #7f1d1d;
+      border: 1px solid #fecaca77;
+    }
+  </style>
+</head>
+
+<body>
+  <header class="admin-header">
+    <h1><i class="fa-solid fa-gauge"></i> Admin Dashboard</h1>
+    <div>
+      <span style="margin-right: 1rem;"><i class="fa-solid fa-circle"></i> Database: Connected</span>
+      <a href="/"
+        style="color: #fff; text-decoration: none; background: #2a7ae2; padding: 0.5rem 1rem; border-radius: 6px;">←
+        Back to Site</a>
+    </div>
+  </header>
+
+  <div class="admin-container">
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="icon"><i class="fa-solid fa-users"></i></div>
+        <h3>Total Users</h3>
+        <div class="value" id="statsUsers">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><i class="fa-solid fa-paw"></i></div>
+        <h3>Total Pets</h3>
+        <div class="value" id="statsPets"><strong>0</strong></div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><i class="fa-solid fa-calendar-check"></i></div>
+        <h3>Total Bookings</h3>
+        <div class="value" id="statsBookings">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="icon"><i class="fa-solid fa-briefcase"></i></div>
+        <h3>Active Services</h3>
+        <div class="value" id="statsServices">0</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="users">👥 Users</button>
+      <button class="tab-btn" data-tab="pets">🐾 Pets</button>
+      <button class="tab-btn" data-tab="bookings">📅 Bookings</button>
+      <button class="tab-btn" data-tab="services">🛍️ Services</button>
+      <button class="tab-btn" data-tab="emergency">🚨 Emergency Contacts</button>
+      <button class="tab-btn" data-tab="health">🏥 Health Records</button>
+    </div>
+    <!-- USERS TAB -->
+    <div id="users-tab" class="tab-content active">
+      <div class="card">
+        <h2><i class="fa-solid fa-user-plus"></i> Create New User</h2>
+        <div id="userMessage" class="message"></div>
+
+        <form id="createUserForm" style="max-width: 500px;">
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" name="email" placeholder="user@example.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="password">Password *</label>
+            <input type="password" id="password" name="password" placeholder="At least 8 characters" minlength="8"
+              required>
+          </div>
+
+          <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" placeholder="John">
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" placeholder="Doe">
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+          </div>
+
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" placeholder="San Francisco">
+          </div>
+
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" placeholder="CA" maxlength="2">
+          </div>
+
+          <div class="btn-group">
+            <button type="submit" class="btn btn-primary"><i class="fa-solid fa-check"></i> Create User</button>
+            <button type="reset" class="btn btn-secondary"><i class="fa-solid fa-rotate-left"></i> Clear</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2><i class="fa-solid fa-list"></i> All Users</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>City, State</th>
+              <th>Created</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="usersList">
+            <tr>
+              <td colspan="7" style="text-align: center; color: #999;">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- PETS TAB -->
+    <div id="pets-tab" class="tab-content">
+      <div class="card">
+        <h2><i class="fa-solid fa-paw"></i> Pet Overview</h2>
+        <p>Total pets registered: <strong id="totalPets">0</strong></p>
+
+        <!-- ✅ ADD MESSAGE DIV -->
+        <div id="petsMessage" class="message"></div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Species</th>
+              <th>Breed</th>
+              <th>Age</th>
+              <th>Weight</th>
+              <th>Vaccinated</th>
+              <th>Type</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="petsList">
+            <tr>
+              <td colspan="9" style="text-align: center;">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- BOOKINGS TAB -->
+    <div id="bookings-tab" class="tab-content">
+      <div class="card">
+        <h2><i class="fa-solid fa-calendar"></i> Bookings Management</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Pet</th>
+              <th>Service</th>
+              <th>Customer</th>
+              <th>Date</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Payment</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsList">
+            <tr>
+              <td colspan="9" style="text-align: center; color: #999;">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SERVICES TAB -->
+    <div id="services-tab" class="tab-content">
+      <div class="card">
+        <h2><i class="fa-solid fa-briefcase"></i> Services</h2>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Price</th>
+              <th>Duration</th>
+            </tr>
+          </thead>
+          <tbody id="servicesList">
+            <tr>
+              <td colspan="5" style="text-align: center; color: #999;">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- EMERGENCY CONTACTS TAB -->
+    <div id="emergency-tab" class="tab-content">
+      <div class="card">
+        <h2><i class="fa-solid fa-phone"></i> Emergency Contacts</h2>
+        <div id="emergencyMessage" class="message"></div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User Email</th>
+              <th>Contact Name</th>
+              <th>Relationship</th>
+              <th>Phone</th>
+              <th>Email</th>
+              <th>Primary</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="emergencyList">
+            <tr>
+              <td colspan="8" style="text-align: center;">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- HEALTH RECORDS TAB -->
+    <div id="health-tab" class="tab-content">
+      <div class="card">
+        <h2><i class="fa-solid fa-heart-pulse"></i> Health Records</h2>
+        <div id="healthMessage" class="message"></div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Pet Name</th>
+              <th>Owner Email</th>
+              <th>Vet Name</th>
+              <th>Vet Clinic</th>
+              <th>Vet Phone</th>
+              <th>Allergies</th>
+              <th>Medications</th>
+              <th>Last Checkup</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="healthList">
+            <tr>
+              <td colspan="10" style="text-align: center;">Loading...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tab = btn.dataset.tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(tab + '-tab').classList.add('active');
+        loadTabData(tab);
+      });
+    });
+
+    // Show message
+    function showMessage(tabName, message, type = 'success') {
+      const el = document.getElementById(tabName + 'Message');
+      if (el) {
+        el.textContent = message;
+        el.className = 'message show ' + type;
+        setTimeout(() => el.classList.remove('show'), 4000);
+      }
+    }
+
+    // Load initial data
+    async function loadStats() {
+      try {
+        const [users, pets, bookings, services] = await Promise.all([
+          fetch('/users').then(r => r.json()),
+          fetch('/api/pets').then(r => r.json()).catch(() => ({ count: 0 })),
+          fetch('/bookings').then(r => r.json()).catch(() => ({ count: 0 })),
+          fetch('/api/services').then(r => r.json()).catch(() => ({ count: 0 }))
+        ]);
+        document.getElementById('statsUsers').textContent = users.count || 0;
+        document.getElementById('statsPets').textContent = pets.count || 0;
+        document.getElementById('statsBookings').textContent = bookings.count || 0;
+        document.getElementById('statsServices').textContent = services.count || 6;
+      } catch (e) { console.error('Stats error:', e); }
+    }
+
+    // Load tab data
+    async function loadTabData(tab) {
+      if (tab === 'users') loadUsers();
+      else if (tab === 'pets') loadPets();
+      else if (tab === 'bookings') loadBookings();
+      else if (tab === 'services') loadServices();
+      else if (tab === 'emergency') loadEmergencyContacts();
+      else if (tab === 'health') loadHealthRecords();
+    }
+
+    async function loadUsers() {
+      try {
+        const res = await fetch('/users');
+        const data = await res.json();
+        const tbody = document.getElementById('usersList');
+        tbody.innerHTML = '';
+        if (data.users && data.users.length > 0) {
+          data.users.forEach(u => {
+            const row = `<tr>
+              <td>${u.id}</td>
+              <td>${u.email}</td>
+              <td>${u.first_name || ''} ${u.last_name || ''}</td>
+              <td>${u.phone || '—'}</td>
+              <td>${u.city || ''}, ${u.state || ''}</td>
+              <td>${new Date(u.created_at).toLocaleDateString()}</td>
+              <td><button class="btn btn-secondary" onclick="deleteUser(${u.id})"><i class="fa-solid fa-trash"></i></button></td>
+            </tr>`;
+            tbody.innerHTML += row;
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No users found</td></tr>';
+        }
+      } catch (e) {
+        console.error('Error loading users:', e);
+        document.getElementById('usersList').innerHTML = '<tr><td colspan="7" style="text-align: center; color: red;">Error loading users</td></tr>';
+      }
+    }
+
+    async function loadPets() {
+      try {
+        const res = await fetch('/admin/pets');  //  CORRECT ENDPOINT
+        const data = await res.json();
+        const tbody = document.getElementById('petsList');
+        tbody.innerHTML = '';
+
+        if (data.ok && data.pets && data.pets.length > 0) {
+          const petCount = data.pets.length;
+
+          document.getElementById('totalPets').textContent = petCount;  // Pets tab counter
+          document.getElementById('statsPets').textContent = petCount;  // Stat card counter
+
+          // document.getElementById('totalPets').textContent = data.pets.length;
+
+          data.pets.forEach(pet => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${pet.id}</td>
+                <td><strong>${pet.name}</strong></td>
+                <td>${pet.species || 'N/A'}</td>
+                <td>${pet.breed || 'N/A'}</td>
+                <td>${pet.age || 'N/A'}</td>
+                <td>${pet.weight ? pet.weight + ' lbs' : 'N/A'}</td>
+                <td><span class="badge ${pet.vaccinated ? 'success' : 'warning'}">
+                  ${pet.vaccinated ? 'Yes' : 'No'}
+                </span></td>
+                <td><span class="badge ${pet.is_primary ? 'success' : 'warning'}">
+                  ${pet.is_primary ? 'Primary' : 'Additional'}
+                </span></td>
+                <td>
+                  <button class="btn btn-secondary" onclick="editPet(${pet.id})">
+                    <i class="fa-solid fa-edit"></i>
+                  </button>
+                  <button class="btn btn-danger" onclick="deletePet(${pet.id})">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+        } else {
+          document.getElementById('totalPets').textContent = '0';
+          document.getElementById('statsPets').textContent = '0';
+          tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: #666;">No pets found</td></tr>';
+        }
+      } catch (e) {
+        console.error('Error loading pets:', e);
+        document.getElementById('petsList').innerHTML = '<tr><td colspan="9" style="text-align: center; color: red;">Error loading pets</td></tr>';
+      }
+    }
+
+    // Edit Pet
+    async function editPet(id) {
+      const petName = prompt('Enter new pet name:');
+      if (!petName || !petName.trim()) {
+        alert('Pet name is required');
+        return;
+      }
+
+      try {
+        const res = await fetch(`/admin/pets/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: petName })
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+          showMessage('pets', '✅ Pet updated successfully', 'success');
+          loadPets();
+        } else {
+          showMessage('pets', '❌ ' + data.error, 'error');
+        }
+      } catch (e) {
+        showMessage('pets', '❌ Error: ' + e.message, 'error');
+      }
+    }
+
+    // Delete Pet
+    async function deletePet(id) {
+      if (!confirm('Are you sure you want to delete this pet?')) return;
+
+      try {
+        const res = await fetch(`/admin/pets/${id}`, {
+          method: 'DELETE'
+        });
+
+        const data = await res.json();
+
+        if (data.ok) {
+          showMessage('pets', '✅ Pet deleted successfully', 'success');
+          loadPets();
+        } else {
+          showMessage('pets', '❌ ' + data.error, 'error');
+        }
+      } catch (e) {
+        showMessage('pets', '❌ Error: ' + e.message, 'error');
+      }
+    }
+
+    async function loadBookings() {
+      try {
+        const res = await fetch('/admin/bookings');
+        const data = await res.json();
+        const tbody = document.getElementById('bookingsList');
+        tbody.innerHTML = '';
+        if (data.bookings && data.bookings.length > 0) {
+          data.bookings.forEach(b => {
+            const statusColor = b.status === 'approved' ? 'success' :
+              b.status === 'denied' ? 'danger' :
+                b.status === 'cancelled' ? 'secondary' : 'warning';
+            const statusIcon = b.status === 'approved' ? '✓' :
+              b.status === 'denied' ? '✗' :
+                b.status === 'cancelled' ? '🚫' : '⏳';
+
+            const paymentColor = b.payment_status === 'paid' ? 'success' : 'warning';
+            const paymentIcon = b.payment_status === 'paid' ? '✓' : '⏳';
+
+            const showActions = b.status === 'pending';
+            const actionsHtml = showActions ? `
+              <button onclick="approveBooking(${b.id})" class="btn-sm btn-success" title="Approve">
+                <i class="fa-solid fa-check"></i>
+              </button>
+              <button onclick="denyBooking(${b.id})" class="btn-sm btn-danger" title="Deny">
+                <i class="fa-solid fa-times"></i>
+              </button>
+            ` : `—`;
+
+            const row = `<tr>
+              <td>#${b.id}</td>
+              <td>${b.pet_name || 'Pet ' + b.pet_id} (${b.pet_species || '—'})</td>
+              <td>${b.service_name || 'Service ' + b.service_id}</td>
+              <td>${b.user_name || b.user_email}</td>
+              <td>${new Date(b.booking_date).toLocaleDateString()}</td>
+              <td>$${parseFloat(b.total || 0).toFixed(2)}</td>
+              <td><span class="badge ${statusColor}">${statusIcon} ${b.status}</span></td>
+              <td><span class="badge ${paymentColor}">${paymentIcon} ${b.payment_status}</span></td>
+              <td>${actionsHtml}</td>
+            </tr>`;
+            tbody.innerHTML += row;
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">No bookings found</td></tr>';
+        }
+      } catch (e) {
+        console.error('Error:', e);
+        document.getElementById('bookingsList').innerHTML = '<tr><td colspan="9" style="text-align: center; color: red;">Error loading bookings</td></tr>';
+      }
+    }
+
+    async function approveBooking(id) {
+      if (!confirm(`Approve booking #${id}?`)) return;
+
+      try {
+        const res = await fetch(`/admin/bookings/${id}/approve`, { method: 'PUT' });
+
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('Server response:', res.status, text);
+          alert(`❌ Server error (${res.status}): ${text.substring(0, 100)}`);
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.ok) {
+          alert('✅ Booking approved!');
+          loadBookings();
+          loadStats();
+        } else {
+          alert('❌ Error: ' + data.error);
+        }
+      } catch (e) {
+        console.error('Error:', e);
+        alert('❌ Failed to approve booking: ' + e.message);
+      }
+    }
+
+    async function denyBooking(id) {
+      const reason = prompt(`Deny booking #${id}?\n\nOptional reason for denial:`);
+      if (reason === null) return; // User clicked cancel
+
+      try {
+        const res = await fetch(`/admin/bookings/${id}/deny`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reason: reason || undefined })
+        });
+
+        if (!res.ok) {
+          const text = await res.text();
+          console.error('Server response:', res.status, text);
+          alert(`❌ Server error (${res.status}): ${text.substring(0, 100)}`);
+          return;
+        }
+
+        const data = await res.json();
+
+        if (data.ok) {
+          alert('❌ Booking denied');
+          loadBookings();
+          loadStats();
+        } else {
+          alert('❌ Error: ' + data.error);
+        }
+      } catch (e) {
+        console.error('Error:', e);
+        alert('❌ Failed to deny booking: ' + e.message);
+      }
+    }
+
+    async function loadServices() {
+      try {
+        const res = await fetch('/api/services');
+        const data = await res.json();
+        const tbody = document.getElementById('servicesList');
+        tbody.innerHTML = '';
+        if (data.services && data.services.length > 0) {
+          data.services.forEach(s => {
+            const row = `<tr>
+              <td>${s.id}</td>
+              <td>${s.name}</td>
+              <td>${s.description || '—'}</td>
+              <td>$${s.base_price}</td>
+              <td>${s.duration_minutes} min</td>
+            </tr>`;
+            tbody.innerHTML += row;
+          });
+        }
+      } catch (e) { console.error('Error:', e); }
+    }
+
+    // ✅ NEW FUNCTION: Load Emergency Contacts
+    async function loadEmergencyContacts() {
+      try {
+        const res = await fetch('/api/admin/emergency-contacts');
+        const data = await res.json();
+        const tbody = document.getElementById('emergencyList');
+        tbody.innerHTML = '';
+
+        if (data.ok && data.contacts && data.contacts.length > 0) {
+          data.contacts.forEach(contact => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${contact.id}</td>
+                <td>${contact.user_email || 'N/A'}</td>
+                <td><strong>${contact.name}</strong></td>
+                <td>${contact.relationship || 'N/A'}</td>
+                <td>${contact.phone}</td>
+                <td>${contact.email || 'N/A'}</td>
+                <td><span class="badge ${contact.is_primary ? 'success' : 'warning'}">
+                  ${contact.is_primary ? 'Primary' : 'Secondary'}
+                </span></td>
+                <td>
+                  <button class="btn btn-danger" onclick="deleteEmergencyContact(${contact.id})">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: #666;">No emergency contacts found</td></tr>';
+        }
+      } catch (e) {
+        console.error('Error loading emergency contacts:', e);
+        document.getElementById('emergencyList').innerHTML = '<tr><td colspan="8" style="text-align: center; color: red;">Error loading data</td></tr>';
+      }
+    }
+
+    // ✅ NEW FUNCTION: Load Health Records
+    async function loadHealthRecords() {
+      try {
+        const res = await fetch('/api/admin/health-records');
+        const data = await res.json();
+        const tbody = document.getElementById('healthList');
+        tbody.innerHTML = '';
+
+        if (data.ok && data.records && data.records.length > 0) {
+          data.records.forEach(record => {
+            tbody.innerHTML += `
+              <tr>
+                <td>${record.id}</td>
+                <td><strong>${record.pet_name || 'N/A'}</strong></td>
+                <td>${record.owner_email || 'N/A'}</td>
+                <td>${record.vet_name || 'N/A'}</td>
+                <td>${record.vet_clinic || 'N/A'}</td>
+                <td>${record.vet_phone || 'N/A'}</td>
+                <td>${record.allergies || 'None'}</td>
+                <td>${record.medications || 'None'}</td>
+                <td>${record.last_checkup_date || 'N/A'}</td>
+                <td>
+                  <button class="btn btn-danger" onclick="deleteHealthRecord(${record.id})">
+                    <i class="fa-solid fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            `;
+          });
+        } else {
+          tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #666;">No health records found</td></tr>';
+        }
+      } catch (e) {
+        console.error('Error loading health records:', e);
+        document.getElementById('healthList').innerHTML = '<tr><td colspan="10" style="text-align: center; color: red;">Error loading data</td></tr>';
+      }
+    }
+
+    // ✅ NEW FUNCTION: Delete Emergency Contact
+    async function deleteEmergencyContact(id) {
+      if (!confirm('Delete this emergency contact?')) return;
+
+      try {
+        const res = await fetch(`/api/admin/emergency-contacts/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+
+        if (data.ok) {
+          showMessage('emergency', '✅ Emergency contact deleted', 'success');
+          loadEmergencyContacts();
+        } else {
+          showMessage('emergency', '❌ ' + data.error, 'error');
+        }
+      } catch (e) {
+        showMessage('emergency', '❌ Error: ' + e.message, 'error');
+      }
+    }
+
+    // ✅ NEW FUNCTION: Delete Health Record
+    async function deleteHealthRecord(id) {
+      if (!confirm('Delete this health record?')) return;
+
+      try {
+        const res = await fetch(`/api/admin/health-records/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+
+        if (data.ok) {
+          showMessage('health', '✅ Health record deleted', 'success');
+          loadHealthRecords();
+        } else {
+          showMessage('health', '❌ ' + data.error, 'error');
+        }
+      } catch (e) {
+        showMessage('health', '❌ Error: ' + e.message, 'error');
+      }
+    }
+
+    // Create user form
+    document.getElementById('createUserForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const formData = {
+        email: document.getElementById('email').value,
+        password_hash: document.getElementById('password').value,
+        first_name: document.getElementById('firstName').value,
+        last_name: document.getElementById('lastName').value,
+        phone: document.getElementById('phone').value,
+        city: document.getElementById('city').value,
+        state: document.getElementById('state').value
+      };
+
+      try {
+        const res = await fetch('/users', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(formData)
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          showMessage('user', '✅ User created successfully!', 'success');
+          document.getElementById('createUserForm').reset();
+          loadUsers();
+          loadStats();
+        } else {
+          showMessage('user', '❌ ' + (data.error || 'Error creating user'), 'error');
+        }
+      } catch (err) {
+        showMessage('user', '❌ Network error: ' + err.message, 'error');
+      }
+    });
+
+    // Delete user
+    async function deleteUser(id) {
+      if (confirm('Are you sure you want to delete this user?')) {
+        try {
+          const res = await fetch(`/users/${id}`, { method: 'DELETE' });
+          if (res.ok) {
+            showMessage('user', 'User deleted', 'success');
+            loadUsers();
+          }
+        } catch (e) { console.error('Error:', e); }
+      }
+    }
+
+    // Init
+    loadStats();
+  </script>
+</body>
+
+</html>

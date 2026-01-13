@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<!-- this tray is used to access any hidden pages/pages behind an interaction layer -->
+
+<!-- DEV TRAY: remove me later -->
+<style>
+  #dev-tray {
+    position: fixed;
+    inset: auto 1rem 1rem auto;
+    z-index: 99999;
+    background: #111827;
+    color: #e5e7eb;
+    border: 1px solid #374151;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    font: 14px/1.2 system-ui;
+    display: none;
+    min-width: 220px
+  }
+
+  #dev-tray a {
+    display: block;
+    padding: .6rem .8rem;
+    color: inherit;
+    text-decoration: none
+  }
+
+  #dev-tray a:hover {
+    background: #1f2937
+  }
+
+  #dev-tray h3 {
+    margin: .6rem .8rem .2rem;
+    font: 600 12px/1.1 system-ui;
+    color: #9ca3af;
+    text-transform: uppercase;
+    letter-spacing: .06em
+  }
+
+  #dev-tray .x {
+    position: absolute;
+    top: .3rem;
+    right: .4rem;
+    border: 0;
+    background: transparent;
+    color: #9ca3af;
+    cursor: pointer
+  }
+</style>
+
+<div id="dev-tray" role="dialog" aria-label="Dev Navigation">
+  <button class="x" aria-label="Close">✕</button>
+  <h3>Hidden pages</h3>
+  <li><a href="/#/">Home</a></li>
+  <li><a href="about.html">About</a></li>
+  <li><a href="services.html">Services</a></li>
+  <li><a href="appointmentForbooking.html">Appointments</a></li>
+  <li><a href="meetAndgreet.html">Meet &amp; Greet</a></li>
+  <li><a href="faq.html">FAQ</a></li>
+  <li><a href="contact.html">Contact</a></li>
+  <li><a href="pricing.html">Pricing - do not use</a></li>
+  <li><a href="privacy.html">Privacy</a></li>
+  <li><a href="resetPassword.html">Reset Password</a></li>
+  <li><a href="signIn.html">Sign In</a></li>
+  <li><a href="signUp.html">Sign Up</a></li>
+  <li><a href="terms.html">Terms</a></li>
+  <li><a href="payment.html">payment</a></li>
+  <!-- Add any other routes here -->
+</div>
+<script>
+  (function () {
+    const tray = document.getElementById('dev-tray');
+    const show = () => tray.style.display = 'block';
+    const hide = () => tray.style.display = 'none';
+    // Toggle with Ctrl+;
+    document.addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === ';') {
+        e.preventDefault();
+        tray.style.display === 'block' ? hide() : show();
+      }
+    });
+    // Close with ESC or ✕
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') hide(); });
+    tray.querySelector('.x').addEventListener('click', hide);
+  })();
+</script>
+
+<!-- END /DEV TRAY -->
+
+
+
+<body>
+  <main>
+    <section>
+      <h2>Welcome to your fur baby's home away from home!</h2>
+      <h4>Your trusted partner for all your petcare needs whether you're looking for pet boarding, daycare, and grooming
+        services, We have you covered!</h4>
+    </section>
+    <br>
+
+    <section>
+      <h3 class="section-title">Popular Services</h3>
+      <br>
+      <ul>
+
+        <section class="service">
+          <div class="service-text">
+            <h3><a href="services.html">Dog Boarding</a></h3>
+            <ul>
+              <li>Our fully vetted and experienced trainers will provide 24/7 care for your pet.</li>
+              <li>We can administer any medication or treatment for both young and old pets!</li>
+              <li>Both are able to accommodate pups who prefer to be on their own as well as pups that love others!</li>
+              <li>All pups begin with a meet and greet before first booking is confirmed.</li>
+              <li>Flexible pickup and drop-off timing, we can fit any schedule!</li>
+            </ul>
+          </div>
+          <div class="service-image">
+            <img src="images/dog photos/IMG_7392.png" alt="'">
+          </div>
+        </section>
+
+        <section class="service image-left">
+          <div class="service-text">
+            <h3><a href="services.html">Cat Boarding</a></h3>
+            <ul>
+              <li> We have a separate facility for feline boarding</li>
+              <li> We can administer any medication or treatment for both young and old pets!</li>
+              <li> Both are able to accomodate pups who prefer to be on their own as well as cats that love others!</li>
+              <li> All cats begin with a meet and greet before first booking is confirmed</li>
+              <li> flexible pickup and drop-off timing, we can fit any schedule!</li>
+            </ul>
+          </div>
+          <div class="service-image">
+            <img src="images/dog photos/IMG_3952.png" alt="'">
+          </div>
+        </section>
+
+        <section class="service">
+          <div class="service-text">
+            <h3><a href="services.html">Grooming and Styling</a></h3>
+            <ul>
+              <li> We have a full staff of groomers and stylists, ready to take on any do!</li>
+              <li> Easy and convenient service, add this service to your pet's stay to save you time!</li>
+              <li> Maintainace services like flea and tick removal, and gland expressing</li>
+              <li> Pet spa services and package deals available, treat your pet to selfcare, today!</li>
+            </ul>
+          </div>
+          <div class="service-image">
+            <img src="images/dog photos/istock-969077342-2000x1333.1000x0-is.png" alt="'">
+          </div>
+        </section>
+
+        <section class="service image-left">
+          <div class="service-text">
+            <h3><a href="https://www.sagecenters.com/" target="_blank" rel="noopener noreferrer">Vet Refferal</a></h3>
+            <ul>
+              <li> We do not offer vet services on site, we partner with a local vet just blocks from our facility</li>
+              <li> For care outside of normal business hours we partner with a local emergency vet in the dog patch</li>
+            </ul>
+          </div>
+          <div class="service-image">
+            <img
+              src="images/dog photos/SAGE_Veterinary_Centers-HeaderLogo.https___sitecreator.nvacommunity.com_Content_images_202211300007056882ONVG.webp"
+              alt="Sage Veterinary Centers logo featuring the company name and veterinary symbol on a professional medical background">
+        </section>
+
+
+    </section>
+  </main>
+
+</body>
+
+</html>

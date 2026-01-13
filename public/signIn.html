@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto+Mono&display=swap"
+        rel="stylesheet" />
+  <link href="stylesheets/main.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet" />
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <title>Sign In | Paws &amp; Company</title>
+
+  <style>
+    .paws-input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .paws-input-wrapper .paws-input {
+      width: 100%;
+      padding-right: 2.5rem;
+      box-sizing: border-box;
+    }
+
+    .paws-pw-toggle {
+      position: absolute;
+      right: 0.75rem;
+      background: transparent;
+      border: none;
+      color: #777;
+      font-size: 1rem;
+      cursor: pointer;
+      padding: 0;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 1.5rem;
+      width: 1.5rem;
+    }
+
+    .paws-pw-toggle:hover {
+      color: #333;
+    }
+
+    .paws-pw-toggle:focus {
+      outline: none;
+      color: var(--accent-color, #2a7ae2);
+    }
+  </style>
+</head>
+
+<body>
+  <main aria-labelledby="signin-title" class="paws-auth-shell">
+    <div class="paws-auth-card" role="form" aria-describedby="signin-help">
+      <h1 id="signin-title">Sign in</h1>
+
+      <!-- MESSAGE DISPLAY -->
+      <div id="signinMessage" class="message"></div>
+
+      <form id="signinForm" novalidate>
+        <div class="paws-form-group">
+          <label for="email">Email</label>
+          <input autocomplete="email"
+                 class="paws-input"
+                 id="email"
+                 name="email"
+                 placeholder="you@example.com"
+                 required
+                 type="email" />
+        </div>
+
+        <div class="paws-form-group paws-pw-wrap">
+          <label for="password">Password</label>
+          <div class="paws-input-wrapper">
+            <input autocomplete="current-password"
+                   class="paws-input"
+                   id="password"
+                   minlength="6"
+                   name="password"
+                   placeholder="Your password"
+                   required
+                   type="password" />
+            <button aria-controls="password"
+                    aria-pressed="false"
+                    class="paws-pw-toggle"
+                    type="button"
+                    aria-label="Show password">
+              <i class="fa-regular fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-options">
+          <label class="paws-toggle-wrap">
+            <input class="paws-toggle-input" id="remember" type="checkbox" />
+            <span class="paws-toggle"></span><span>Keep me signed in</span>
+          </label>
+
+          <a aria-label="Forgot password"
+             class="paws-forgot-link"
+             href="/auth/forgot-password">Forgot password?</a>
+        </div>
+
+        <button class="paws-btn-primary" type="submit" id="signinBtn">
+          <i class="fa fa-lock"></i>Continue
+        </button>
+
+        <p class="paws-note-legal" id="signin-help">
+          By continuing, you agree to Paws &amp; Company's
+          <a class="paws-link" href="terms.html">Terms</a> and
+          <a class="paws-link" href="privacy.html">Privacy Notice</a>.
+        </p>
+      </form>
+
+      <hr class="divider" />
+
+      <div class="paws-panel">
+        <div class="title">New to Paws &amp; Company?</div>
+        <a class="paws-btn secondary" href="signup.html" role="button">
+          Create your account
+        </a>
+      </div>
+    </div>
+  </main>
+
+<script>
+  // PASSWORD TOGGLE
+  (function () {
+    const toggle = document.querySelector('.paws-pw-toggle');
+    const input = document.getElementById('password');
+    if (!toggle || !input) return;
+
+    toggle.addEventListener('click', function () {
+      const isHidden = input.type === 'password';
+      input.type = isHidden ? 'text' : 'password';
+      this.setAttribute('aria-pressed', String(isHidden));
+      this.setAttribute('aria-label', isHidden ? 'Hide password' : 'Show password');
+      this.innerHTML = isHidden
+        ? '<i class="fa-regular fa-eye-slash"></i>'
+        : '<i class="fa-regular fa-eye"></i>';
+    });
+  })();
+
+  const signinForm = document.getElementById('signinForm');
+  const signinBtn = document.getElementById('signinBtn');
+  const signinMessage = document.getElementById('signinMessage');
+
+  // Read ?redirect=/appointmentForbooking.html
+  const urlParams = new URLSearchParams(window.location.search);
+  const redirectParam = urlParams.get('redirect');
+
+  signinForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!email || !password) {
+      showMessage('❌ Please enter both email and password', 'error');
+      return;
+    }
+    if (!email.includes('@')) {
+      showMessage('❌ Please enter a valid email address', 'error');
+      return;
+    }
+    if (password.length < 6) {
+      showMessage('❌ Password must be at least 6 characters', 'error');
+      return;
+    }
+
+    signinBtn.disabled = true;
+    signinBtn.innerHTML = '<span class="loading-spinner"></span> Signing in...';
+    signinMessage.textContent = '';
+    signinMessage.classList.remove('show');
+
+    try {
+      const res = await fetch('/auth/signin', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
+          redirect: redirectParam   // send it to backend too
+        })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        showMessage('✅ Login successful! Redirecting...', 'success');
+
+        if (data.user) {
+          sessionStorage.setItem('userLoggedIn', 'true');
+          sessionStorage.setItem('userId', data.user.id);
+          sessionStorage.setItem('userEmail', data.user.email);
+          sessionStorage.setItem('userName', data.user.firstName || data.user.name || 'User');
+          sessionStorage.setItem('userRole', data.user.role || 'user');
+        }
+
+        window.dispatchEvent(new Event('user-login'));
+
+        // FINAL redirect decision:
+        // 1) Prefer ?redirect= from URL
+        // 2) Otherwise backend data.redirect
+        // 3) Otherwise home
+        const target = redirectParam || data.redirect || '/index.html';
+
+        setTimeout(() => {
+          window.location.href = target;
+        }, 800);
+      } else {
+        showMessage('❌ ' + (data.error || 'Invalid email or password'), 'error');
+        signinBtn.disabled = false;
+        signinBtn.innerHTML = '<i class="fa fa-lock"></i>Continue';
+      }
+    } catch (err) {
+      showMessage('❌ Network error: ' + err.message, 'error');
+      signinBtn.disabled = false;
+      signinBtn.innerHTML = '<i class="fa fa-lock"></i>Continue';
+    }
+  });
+
+  function showMessage(text, type) {
+    signinMessage.textContent = text;
+    signinMessage.className = 'message show ' + type;
+    setTimeout(() => signinMessage.classList.remove('show'), 5000);
+  }
+
+  const style = document.createElement('style');
+  style.textContent = `
+    .loading-spinner {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      border: 2px solid rgba(255,255,255,.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .message {
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+      display: none;
+      animation: slideIn 0.3s ease;
+    }
+    .message.show { display: block; }
+    .message.success {
+      background: #10b98122;
+      color: #065f46;
+      border: 1px solid #10b98155;
+    }
+    .message.error {
+      background: #fecaca44;
+      color: #7f1d1d;
+      border: 1px solid #fecaca77;
+    }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  `;
+  document.head.appendChild(style);
+</script>
+
+  <!-- If these scripts also handle login/redirect, make sure they DON'T redirect on 'user-login' -->
+  <script src="scripts/main.js"></script>
+</body>
+</html>

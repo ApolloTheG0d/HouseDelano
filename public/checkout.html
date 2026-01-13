@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Booking Confirmed | Paws &amp; Company</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="stylesheets/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <style>
+    .checkout-hero {
+      background:#fff;
+      border-radius:16px;
+      padding:20px 24px;
+      box-shadow:0 10px 30px rgba(0,0,0,.18);
+      border:1px solid #ddd;
+      margin-bottom:24px;
+    }
+    .checkout-hero h1{
+      margin:0;
+      font-size:26px;
+      color:#123155;
+    }
+    .checkout-hero p{
+      margin:8px 0 0;
+      color:#333;
+    }
+    .pill {
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      padding:4px 10px;
+      border-radius:999px;
+      background:#e8f5e9;
+      color:#2e7d32;
+      font-size:13px;
+      font-weight:600;
+      margin-top:8px;
+    }
+    .pill i{ font-size:12px; }
+
+    .checkout-grid{
+      display:grid;
+      grid-template-columns:2fr 1.3fr;
+      gap:18px;
+    }
+    @media (max-width:800px){
+      .checkout-grid{ grid-template-columns:1fr; }
+    }
+    .paws-confirm-card{
+      background:#ffffff;
+      border:1px solid #d0d0d0;
+      border-radius:16px;
+      box-shadow:0 4px 16px rgba(0,0,0,.12);
+      padding:20px 22px;
+    }
+    .paws-confirm-card h2{
+      margin:0 0 10px;
+      color:#123155;
+      font-size:20px;
+    }
+    .line{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      margin:4px 0;
+      font-size:15px;
+    }
+    .line span.label{ color:#555; }
+    .line span.value{ font-weight:600; color:#000; }
+    .divider{ height:1px; background:#ddd; margin:10px 0; }
+    .total{
+      font-size:18px;
+      font-weight:700;
+      color:#000;
+    }
+    .muted{ color:#666; font-size:13px; margin-top:4px; }
+
+    .paws-btn-row{
+      margin-top:18px;
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .paws-btn{
+      background:#123155;
+      border-radius:14px;
+      padding:9px 16px;
+      color:#fff;
+      text-decoration:none;
+      border:1px solid #274061;
+      font-weight:600;
+      cursor:pointer;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .paws-btn.secondary{
+      background:#f5f5f5;
+      border-color:#ccc;
+      color:#000;
+    }
+    .paws-btn:hover{ background:#1a457a; color:#fff; }
+  </style>
+</head>
+<body id="paws-services">
+  <header class="paws-header">
+    <h1><a href="index.html">🐾 Paws &amp; Company</a></h1>
+    <nav class="paws-nav">
+      <ul id="site-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="appointmentForbooking.html">Appointments</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="paws-confirm">
+    <!-- HERO -->
+    <section class="checkout-hero">
+      <h1>Booking confirmed 🎉</h1>
+      <p id="heroLine">We’ve received your payment and emailed your confirmation.</p>
+      <div class="pill">
+        <i class="fa-solid fa-shield-dog"></i>
+        <span id="refPill">Reference: —</span>
+      </div>
+    </section>
+
+    <!-- SUMMARY CARDS -->
+    <section class="checkout-grid">
+      <!-- Appointment + payment summary -->
+      <article class="paws-confirm-card">
+        <h2>Appointment summary</h2>
+        <div class="line">
+          <span class="label">Service</span>
+          <span class="value" id="sumService">—</span>
+        </div>
+        <div class="line">
+          <span class="label">Date</span>
+          <span class="value" id="sumDate">—</span>
+        </div>
+        <div class="line">
+          <span class="label">Add-ons</span>
+          <span class="value" id="sumAddons">$0.00</span>
+        </div>
+        <div class="divider"></div>
+        <div class="line">
+          <span class="label">Subtotal</span>
+          <span class="value" id="sumSubtotal">$0.00</span>
+        </div>
+        <div class="line">
+          <span class="label">Tax</span>
+          <span class="value" id="sumTax">$0.00</span>
+        </div>
+        <div class="divider"></div>
+        <div class="line total">
+          <span>Total paid</span>
+          <span id="sumTotal">$0.00</span>
+        </div>
+        <p class="muted" id="payMethodLine">Payment method: —</p>
+
+        <div class="paws-btn-row">
+          <a href="appointmentForbooking.html" class="paws-btn secondary">
+            <i class="fa-solid fa-plus"></i> Book another visit
+          </a>
+          <a href="index.html" class="paws-btn">
+            <i class="fa-solid fa-house"></i> Back to home
+          </a>
+        </div>
+      </article>
+
+      <!-- Customer / pet details -->
+      <aside class="paws-confirm-card">
+        <h2>Who it’s for</h2>
+        <div class="line">
+          <span class="label">Owner</span>
+          <span class="value" id="ownerName">—</span>
+        </div>
+        <div class="line">
+          <span class="label">Email</span>
+          <span class="value" id="ownerEmail">—</span>
+        </div>
+        <div class="line">
+          <span class="label">Phone</span>
+          <span class="value" id="ownerPhone">—</span>
+        </div>
+        <div class="divider"></div>
+        <div class="line">
+          <span class="label">Pet name</span>
+          <span class="value" id="petName">—</span>
+        </div>
+        <p class="muted">If anything looks wrong, Please contact us and we’ll help fix it.</p>
+      </aside>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Paws &amp; Company | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p>
+  </footer>
+
+ <script>
+  (async function(){
+    const fmt = n => '$' + Number(n || 0).toFixed(2);
+
+    let booking = null;
+    let lastPayment = null;
+
+    // -----------------------------
+    // Helpers
+    // -----------------------------
+    function getQueryParam(name) {
+      const params = new URLSearchParams(window.location.search);
+      return params.get(name);
+    }
+
+    function formatBookingDate(dateStr) {
+      if (!dateStr) return '—';
+      const s = String(dateStr);
+      const match = s.match(/^(\d{4})-(\d{2})-(\d{2})/); // "YYYY-MM-DD"
+      if (!match) return s;
+
+      const year  = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10);
+      const day   = parseInt(match[3], 10);
+      if (isNaN(year) || isNaN(month) || isNaN(day)) return s;
+
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const monthLabel = months[month - 1] || match[2];
+
+      return `${monthLabel} ${day}, ${year}`;
+    }
+
+    function formatBookingTime(timeStr) {
+      if (!timeStr) return '—';
+      // ✅ As you requested: just show whatever is stored, no AM/PM logic.
+      return String(timeStr);
+    }
+
+    // -----------------------------
+    // 1. Read from sessionStorage
+    // -----------------------------
+    try {
+      const bRaw = sessionStorage.getItem('booking');
+      const pRaw = sessionStorage.getItem('lastPayment');
+      if (bRaw) booking = JSON.parse(bRaw);
+      if (pRaw) lastPayment = JSON.parse(pRaw);
+    } catch(e){
+      console.warn('Could not parse stored data', e);
+    }
+
+    // -----------------------------
+    // 2. If no booking in storage, try ?bookingId= from URL
+    // -----------------------------
+    if (!booking) {
+      const bookingIdFromUrl = getQueryParam('bookingId');
+
+      if (bookingIdFromUrl) {
+        try {
+          const res = await fetch('/api/user/bookings');
+          if (res.status === 401) {
+            // not logged in – send to sign in, then back here
+            const redirect = encodeURIComponent(window.location.pathname + window.location.search);
+            window.location.href = `/signIn.html?redirect=${redirect}`;
+            return;
+          }
+
+          const data = await res.json();
+          if (data.ok && Array.isArray(data.bookings)) {
+            const b = data.bookings.find(bk => String(bk.id) === String(bookingIdFromUrl));
+            if (b) {
+              // Build a "booking" object similar to what the payment page uses
+              const first =
+                b.customer_first_name ||
+                b.user_first_name ||
+                '';
+              const last  =
+                b.customer_last_name ||
+                b.user_last_name ||
+                '';
+
+              const ownerName  = (first + ' ' + last).trim() || 'Guest';
+              const ownerEmail = b.customer_email || b.email || '';
+              const ownerPhone = b.customer_phone || b.phone || '';
+
+              const total = Number(b.total || 0);
+              let tax      = typeof b.tax === 'number' ? Number(b.tax) : total * 0.08625;
+              let subtotal = typeof b.subtotal === 'number'
+                ? Number(b.subtotal)
+                : (total - tax);
+
+              let addons_total = 0;
+              let addons = [];
+              if (Array.isArray(b.addons)) {
+                addons = b.addons.map(a => {
+                  const price = Number(a.price_at_purchase || a.price || 0);
+                  addons_total += price;
+                  return {
+                    label: a.name,
+                    price
+                  };
+                });
+              }
+
+              booking = {
+                bookingId: b.id,
+                serviceLabel: b.service_name || 'Service',
+                // you already wanted to keep date & time as stored, so we format them once here
+                date: `${formatBookingDate(b.booking_date)} ${formatBookingTime(b.booking_time)}`,
+                subtotal,
+                tax,
+                total,
+                addons_total,
+                addons,
+                ownerName,
+                ownerEmail,
+                ownerPhone,
+                petName: b.pet_name || ''
+              };
+
+              // Save for any other pages that read from sessionStorage
+              sessionStorage.setItem('booking', JSON.stringify(booking));
+            }
+          }
+        } catch (err) {
+          console.error('Error loading booking by ID for checkout:', err);
+        }
+      }
+    }
+
+    // -----------------------------
+    // 3. Render reference pill
+    // -----------------------------
+    const refPill = document.getElementById('refPill');
+    if (refPill) {
+      if (lastPayment && lastPayment.reference) {
+        refPill.textContent = 'Reference: ' + lastPayment.reference;
+      } else if (lastPayment && lastPayment.payment_id) {
+        const suffix = String(lastPayment.payment_id).padStart(6,'0');
+        refPill.textContent = 'Reference: PWC-' + suffix;
+      } else {
+        refPill.textContent = 'Reference: pending';
+      }
+    }
+
+    // -----------------------------
+    // 4. Appointment summary
+    // -----------------------------
+    if (booking) {
+      const sumService  = document.getElementById('sumService');
+      const sumDate     = document.getElementById('sumDate');
+      const sumSubtotal = document.getElementById('sumSubtotal');
+      const sumTax      = document.getElementById('sumTax');
+      const sumTotal    = document.getElementById('sumTotal');
+      const sumAddons   = document.getElementById('sumAddons');
+
+      if (sumService)  sumService.textContent  = booking.serviceLabel || 'Service';
+      if (sumDate)     sumDate.textContent     = booking.date || '—';
+      if (sumSubtotal) sumSubtotal.textContent = fmt(booking.subtotal);
+      if (sumTax)      sumTax.textContent      = fmt(booking.tax);
+      if (sumTotal)    sumTotal.textContent    = fmt(booking.total);
+      if (sumAddons)   sumAddons.textContent   = fmt(booking.addons_total || 0);
+
+      const ownerName  = document.getElementById('ownerName');
+      const ownerEmail = document.getElementById('ownerEmail');
+      const ownerPhone = document.getElementById('ownerPhone');
+      const petName    = document.getElementById('petName');
+
+      if (ownerName)  ownerName.textContent  = booking.ownerName  || '—';
+      if (ownerEmail) ownerEmail.textContent = booking.ownerEmail || '—';
+      if (ownerPhone) ownerPhone.textContent = booking.ownerPhone || '—';
+      if (petName)    petName.textContent    = booking.petName    || '—';
+    }
+
+    // -----------------------------
+    // 5. Payment method line
+    // -----------------------------
+    const methodLine = document.getElementById('payMethodLine');
+    if (methodLine) {
+      if (lastPayment) {
+        const provRaw = lastPayment.provider || 'card';
+        const prov = provRaw.replace(/_/g,' ');
+
+        const rawLast4 = lastPayment.card_last4 || '••••';
+
+        // if it's the fake default, show a random-looking last4 instead
+        let displayLast4 = rawLast4;
+        if (rawLast4 === '4242' || rawLast4 === '••••') {
+          const random4 = Math.floor(1000 + Math.random() * 9000);
+          displayLast4 = String(random4);
+        }
+
+        methodLine.textContent =
+          'Payment method: ' + prov + ' ending in ' + displayLast4;
+      } else {
+        methodLine.textContent = 'Payment method: card on file';
+      }
+    }
+
+    // -----------------------------
+    // 6. Clear session data AFTER rendering
+    // -----------------------------
+    sessionStorage.removeItem('booking');
+    sessionStorage.removeItem('bookingExpiresAt');
+    sessionStorage.removeItem('lastPayment');
+  })();
+</script>
+</body>
+</html>

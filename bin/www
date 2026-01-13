@@ -1,0 +1,109 @@
+#!/usr/bin/env node
+
+/**
+ * Module dependencies.
+ */
+
+var app = require('../app');
+var debug = require('debug')('group-project-apollotheg0d:server');
+var http = require('http');
+
+/**
+ * Get port from environment or use default 3001
+ */
+var port = normalizePort(process.env.PORT || '3001');
+app.set('port', port);
+
+/**
+ * Create HTTP server
+ */
+var server = http.createServer(app);
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+server.listen(port, '0.0.0.0');
+server.on('error', onError);
+server.on('listening', onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    return val;
+  }
+
+  if (port >= 0) {
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  switch (error.code) {
+    case 'EACCES':
+      console.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      console.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+function onListening() {
+  var addr = server.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+
+  debug('Listening on ' + bind);
+
+  console.log('\n');
+  console.log('╔════════════════════════════════════════════════════════╗');
+  console.log('║                                                        ║');
+  console.log('║        🐾 Paws & Company - Server Started 🐾           ║');
+  console.log('║                                                        ║');
+  console.log('╚════════════════════════════════════════════════════════╝');
+  console.log('\n');
+
+  console.log('📍 Local Access:');
+  console.log(`   🌐 http://localhost:${port}`);
+  console.log(`   🌐 http://127.0.0.1:${port}`);
+
+  console.log('\n');
+  console.log('📊 Server Configuration:');
+  console.log(`   Port:        ${port}`);
+  console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`   Node Version: ${process.version}`);
+  console.log('\n');
+
+  console.log('📚 Quick Links:');
+  console.log(`   Admin Login: http://localhost:${port}/admin/login`);
+  console.log(`   Account:     http://localhost:${port}/account.html`);
+  console.log(`   Health Check: http://localhost:${port}/health/db`);
+  console.log('\n');
+
+  console.log('⏹️  Press Ctrl+C to stop the server\n');
+}

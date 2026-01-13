@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- <head> -->
+  <!-- <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Schedule | Paws & Company</title> -->
+  <!-- Match global site assets -->
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="stylesheet" href="stylesheets/main.css" /> -->
+  <!-- <script defer src="scripts/main.js"></script> -->
+  <style>
+    /* Page-scoped helpers to complement main.css */
+    .scheduler-wrap { display: grid; grid-template-columns: 1fr 1.2fr; gap: 1.5rem; align-items: start; }
+    .calendar { background: #fff; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 1rem; }
+    .cal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:.5rem; }
+    .cal-header h3 { margin: 0; }
+    .cal-nav { display:flex; gap:.5rem; }
+    .cal-grid { display:grid; grid-template-columns: repeat(7, 1fr); gap:.25rem; }
+    .cal-dow, .cal-day { text-align:center; padding:.5rem 0; font-weight:600; }
+    .cal-dow { opacity:.65; font-size:.9rem; }
+    .cal-day { border-radius:10px; cursor:pointer; user-select:none; }
+    .cal-day.out { opacity:.35; cursor:default; }
+    .cal-day.today { outline: 2px solid #111827; }
+    .cal-day.selected { background:#111827; color:#fff; }
+
+    .availability { background:#fff; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 1rem; }
+    .availability header { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.5rem; flex-wrap: wrap;}
+    .availability-list { display:flex; flex-direction:column; gap:.5rem; }
+    .sitter-card { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:.75rem 1rem; border:1px solid #e5e7eb; border-radius:12px; }
+    .badge { font-size:.8rem; padding:.2rem .5rem; border-radius:999px; }
+    .badge.free { background:#10b98122; color:#065f46; border:1px solid #10b98155; }
+    .badge.booked { background:#ef444422; color:#7f1d1d; border:1px solid #ef444455; }
+
+    .filters { display:flex; gap:.5rem; align-items:center; }
+    .filters input[type="search"] { padding:.5rem .6rem; border:1px solid #e5e7eb; border-radius:10px; }
+    .filters label { display:flex; gap:.4rem; align-items:center; font-size:.9rem; }
+
+    /* ADDED: time dropdown + booking button styling */
+    .time-select {
+      padding: .5rem .6rem;
+      border: 1px solid #e5e7eb;
+      border-radius: 10px;
+      background: #fff;
+      min-width: 140px;
+    }
+    .sitter-actions { display:flex; align-items:center; gap:.6rem; }
+    .book-btn {
+      padding: .45rem .7rem;
+      border-radius: 10px;
+      border: 1px solid #111827;
+      background: #111827;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .book-btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 960px) { .scheduler-wrap { grid-template-columns: 1fr; } }
+  </style>
+<!-- </head> -->
+<body>
+  <!-- <div class="paws-background"></div>
+
+  <header class="paws-header">
+    <h1><a href="index.html">Paws &amp; Company</a></h1>
+    <nav class="paws-nav">
+      <button class="paws-nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="Toggle navigation menu">☰</button>
+      <ul id="site-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="appointmentForbooking.html">Appointments</a></li>
+        <li><a href="meetAndgreet.html">Meet &amp; Greet</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="signIn.html">Sign In</a></li>
+      </ul>
+    </nav>
+  </header> -->
+
+  <main id="main" class="site-main" tabindex="-1">
+    <!-- Intro in site style -->
+    <section class="service image-left" style="margin-top:1rem;">
+      <div class="service-text">
+        <h2>Schedule With Our Sitters</h2>
+        <p>Select a date to see who’s available. Then proceed to request a booking or reach out for a custom arrangement.</p>
+      </div>
+      <div class="service-image">
+        <img src="images/schedule-hero.jpg" alt="Calendar with pet care schedule" />
+      </div>
+    </section>
+
+    <!-- Scheduler two-column layout -->
+    <section class="scheduler-wrap" aria-label="Scheduling widget">
+      <!-- Calendar (left) -->
+      <div class="calendar" aria-label="Calendar" role="group">
+        <div class="cal-header">
+          <button class="btn" id="prevMonth" aria-label="Previous month"><i class="fa-solid fa-chevron-left"></i></button>
+          <h3 id="calTitle">Month YYYY</h3>
+          <button class="btn" id="nextMonth" aria-label="Next month"><i class="fa-solid fa-chevron-right"></i></button>
+        </div>
+        <div class="cal-grid" id="calGrid" aria-label="Calendar grid">
+          <!-- DOW headings -->
+          <div class="cal-dow">Sun</div>
+          <div class="cal-dow">Mon</div>
+          <div class="cal-dow">Tue</div>
+          <div class="cal-dow">Wed</div>
+          <div class="cal-dow">Thu</div>
+          <div class="cal-dow">Fri</div>
+          <div class="cal-dow">Sat</div>
+          <!-- Days injected by JS -->
+        </div>
+      </div>
+
+      <!-- Availability (right) -->
+      <div class="availability" aria-live="polite">
+        <header>
+          <div>
+            <h3 id="availTitle">Select a date</h3>
+            <p class="muted" id="availSubtitle">Choose a day on the calendar to see sitter availability.</p>
+          </div>
+
+          <div class="filters">
+            <!-- ADDED: time slot selector (filters out past times for the selected date) -->
+            <select id="timeSlot" class="time-select" aria-label="Select a time slot">
+              <option value="">Select time</option>
+            </select>
+
+            <input id="searchSitter" type="search" placeholder="Search sitter name" aria-label="Search sitter name" />
+            <label><input id="filterFree" type="checkbox" /> Show only free</label>
+          </div>
+        </header>
+
+        <div class="availability-list" id="availabilityList"></div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // --- Mock sitter data (replace with real API later) ---
+    const sitters = [
+      { id: 'jake', name: 'Jake W', roles: ['Owner','Sitter'] },
+      { id: 'shanghong', name: 'Shanghong', roles: ['Head Groomer','Sitter'] },
+      { id: 'huyhuy', name: 'Huy Huy', roles: ['Trainer','Sitter'] },
+      { id: 'edward', name: 'Edward', roles: ['Trainer','Sitter'] }
+    ];
+
+    // Availability map: ISO date (YYYY-MM-DD) -> Set of sitter ids that are BOOKED
+    // For demo, pre-fill a few busy dates. Others will be randomized.
+    const bookedByDate = new Map([
+      ['2025-11-05', new Set(['jake', 'maya'])],
+      ['2025-11-06', new Set(['edward'])],
+      ['2025-11-10', new Set(['shanghong','leo'])],
+    ]);
+
+    // Helper to format/parse dates
+    const pad = n => String(n).padStart(2, '0');
+    const toISO = (y,m,d) => `${y}-${pad(m+1)}-${pad(d)}`; // m is 0-based
+
+    // ADDED: parse YYYY-MM-DD as a *local* Date (avoids UTC shifting)
+    function fromISODateLocal(iso){
+      // iso expected "YYYY-MM-DD"
+      const [y, m, d] = (iso || '').split('-').map(Number);
+      if(!y || !m || !d) return new Date(NaN);
+      return new Date(y, m - 1, d);
+    }
+
+    // ADDED: time helpers (filters out past times)
+    const timeSlots = [
+      '09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00'
+    ];
+    function todayISO(){
+      const t = new Date();
+      return toISO(t.getFullYear(), t.getMonth(), t.getDate());
+    }
+    function getAvailableTimeSlots(iso){
+      // Past date -> no available times
+      const tISO = todayISO();
+      if(!iso || iso < tISO) return [];
+
+      // Future date -> all time slots
+      if(iso > tISO) return [...timeSlots];
+
+      // Today -> filter out past times (strictly earlier than now)
+      const now = new Date();
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+      return timeSlots.filter(hhmm => {
+        const [hh, mm] = hhmm.split(':').map(Number);
+        const slotMinutes = hh * 60 + mm;
+        return slotMinutes > nowMinutes; // only future times
+      });
+    }
+
+    function populateTimeSlots(){
+      const select = timeSlotEl;
+      const current = select.value;
+
+      // Reset options
+      select.innerHTML = '';
+      const defaultOpt = document.createElement('option');
+      defaultOpt.value = '';
+      defaultOpt.textContent = 'Select time';
+      select.appendChild(defaultOpt);
+
+      if(!selectedISO){
+        select.disabled = true;
+        return;
+      }
+
+      const slots = getAvailableTimeSlots(selectedISO);
+      select.disabled = false;
+
+      if(!slots.length){
+        const opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = (selectedISO < todayISO())
+          ? 'No times (past date)'
+          : 'No remaining times today';
+        select.appendChild(opt);
+        select.value = '';
+        return;
+      }
+
+      slots.forEach(hhmm => {
+        const opt = document.createElement('option');
+        opt.value = hhmm;
+        opt.textContent = hhmm;
+        select.appendChild(opt);
+      });
+
+      // Try keep selection if still valid
+      if(current && slots.includes(current)) select.value = current;
+      else select.value = '';
+    }
+
+    // Calendar state
+    let view = (() => { const t = new Date(); return { y: t.getFullYear(), m: t.getMonth() }; })();
+    let selectedISO = null;
+
+    const calTitle = document.getElementById('calTitle');
+    const calGrid  = document.getElementById('calGrid');
+    const prevBtn  = document.getElementById('prevMonth');
+    const nextBtn  = document.getElementById('nextMonth');
+
+    const availTitle = document.getElementById('availTitle');
+    const availSubtitle = document.getElementById('availSubtitle');
+    const listEl = document.getElementById('availabilityList');
+    const searchEl = document.getElementById('searchSitter');
+    const filterFreeEl = document.getElementById('filterFree');
+
+    const timeSlotEl = document.getElementById('timeSlot'); // ADDED
+
+    function buildCalendar(y, m){
+      // Clean previous day cells (keep 7 DOW headers: first 7 children)
+      while(calGrid.children.length > 7) calGrid.removeChild(calGrid.lastChild);
+
+      const first = new Date(y, m, 1);
+      const last  = new Date(y, m + 1, 0);
+      const firstDow = first.getDay(); // 0..6
+      const daysInMonth = last.getDate();
+
+      const monthName = first.toLocaleString(undefined,{ month:'long' });
+      calTitle.textContent = `${monthName} ${y}`;
+
+      // Fill leading out-days
+      const prevLast = new Date(y, m, 0).getDate();
+      for(let i=firstDow-1; i>=0; i--){
+        const d = document.createElement('div');
+        d.className = 'cal-day out';
+        d.textContent = String(prevLast - i);
+        calGrid.appendChild(d);
+      }
+      // Fill current month days
+      // const todayISO = toISO(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+      // for(let day=1; day<=daysInMonth; day++){
+      //   const iso = toISO(y, m, day);
+      //   const d = document.createElement('button');
+      //   d.type = 'button';
+      //   d.className = 'cal-day';
+      //   d.textContent = String(day);
+      //   d.setAttribute('data-iso', iso);
+      //   if(iso === todayISO) d.classList.add('today');
+      //   if(iso === selectedISO) d.classList.add('selected');
+      //   d.addEventListener('click', () => selectDate(iso, d));
+      //   calGrid.appendChild(d);
+      // }
+      const tISO = todayISO();
+      for(let day=1; day<=daysInMonth; day++){
+        const iso = toISO(y, m, day);
+        const d = document.createElement('button');
+        d.type = 'button';
+        d.className = 'cal-day';
+        d.textContent = String(day);
+        d.setAttribute('data-iso', iso);
+
+        if(iso === tISO) d.classList.add('today');
+        if(iso === selectedISO) d.classList.add('selected');
+
+        const isPast = iso < tISO;
+        if(isPast){
+          d.disabled = true;
+          d.classList.add('out');
+          d.setAttribute('aria-disabled', 'true');
+        } else {
+          d.addEventListener('click', () => selectDate(iso, d));
+        }
+
+        calGrid.appendChild(d);
+      }
+      // Fill trailing out-days to complete 6 rows if needed
+      const cells = calGrid.children.length - 7; // exclude headers
+      const rows = Math.ceil(cells / 7);
+      const totalCells = rows * 7;
+      const trailing = totalCells - cells;
+      for(let i=1; i<=trailing; i++){
+        const d = document.createElement('div');
+        d.className = 'cal-day out';
+        d.textContent = String(i);
+        calGrid.appendChild(d);
+      }
+    }
+
+    function randomizeIfNeeded(iso){
+      if(!bookedByDate.has(iso)){
+        // Create a random set (25% chance each sitter is booked)
+        const set = new Set();
+        sitters.forEach(s => { if(Math.random() < 0.25) set.add(s.id); });
+        bookedByDate.set(iso, set);
+      }
+    }
+
+    function selectDate(iso, btn){
+      selectedISO = iso;
+      // Update selected state in grid
+      [...calGrid.querySelectorAll('.cal-day')].forEach(el => el.classList.toggle('selected', el === btn));
+
+      // Prepare availability
+      randomizeIfNeeded(iso);
+      populateTimeSlots(); // ADDED
+      renderAvailability();
+    }
+
+    function goToAppointment({ iso, time, sitter }){
+      if(!iso || !time || !sitter) return;
+
+      const url = new URL('appointmentForbooking.html', window.location.href);
+      url.searchParams.set('date', iso);
+      url.searchParams.set('time', time);
+      url.searchParams.set('sitterId', sitter.id);
+      url.searchParams.set('sitterName', sitter.name);
+
+      window.location.href = url.toString();
+    }
+
+    function renderAvailability(){
+      const iso = selectedISO;
+      if(!iso){
+        availTitle.textContent = 'Select a date';
+        availSubtitle.textContent = 'Choose a day on the calendar to see sitter availability.';
+        listEl.innerHTML = '';
+        timeSlotEl.disabled = true; // ADDED
+        return;
+      }
+
+      // ADDED: handle past date messaging (even though calendar disables past days)
+      if(iso < todayISO()){
+        availTitle.textContent = new Date(iso).toLocaleDateString(undefined,{ weekday:'long', year:'numeric', month:'long', day:'numeric' });
+        availSubtitle.textContent = 'This date is in the past. Please choose a future date.';
+        listEl.innerHTML = '';
+        populateTimeSlots();
+        return;
+      }
+
+      const friendly = new Date(iso).toLocaleDateString(undefined,{ weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      availTitle.textContent = friendly;
+      availSubtitle.textContent = 'Current sitter availability';
+
+      const booked = bookedByDate.get(iso) || new Set();
+      const term = (searchEl.value || '').toLowerCase();
+      const onlyFree = filterFreeEl.checked;
+
+      const filtered = sitters.filter(s => {
+        const isBooked = booked.has(s.id);
+        const passesFree = !onlyFree || !isBooked;
+        const passesTerm = !term || s.name.toLowerCase().includes(term);
+        return passesFree && passesTerm;
+      });
+
+      listEl.innerHTML = '';
+      if(!filtered.length){
+        const p = document.createElement('p');
+        p.className = 'muted';
+        p.textContent = 'No sitters match your filters for this date.';
+        listEl.appendChild(p);
+        return;
+      }
+
+      const selectedTime = timeSlotEl.value;
+
+      // filtered.forEach(s => {
+      //   const isBooked = booked.has(s.id);
+      //   const card = document.createElement('div');
+      //   card.className = 'sitter-card';
+
+      //   const left = document.createElement('div');
+      //   const name = document.createElement('strong');
+      //   name.textContent = s.name;
+      //   const roles = document.createElement('div');
+      //   roles.className = 'muted';
+      //   roles.textContent = s.roles.join(' • ');
+      //   left.appendChild(name); left.appendChild(roles);
+
+      //   const right = document.createElement('div');
+      //   const badge = document.createElement('span');
+      //   badge.className = 'badge ' + (isBooked ? 'booked' : 'free');
+      //   badge.textContent = isBooked ? 'Booked' : 'Free';
+      //   right.appendChild(badge);
+
+      //   card.appendChild(left); card.appendChild(right);
+      //   listEl.appendChild(card);
+      // });
+      filtered.forEach(s => {
+        const isBooked = booked.has(s.id);
+        const card = document.createElement('div');
+        card.className = 'sitter-card';
+
+        const left = document.createElement('div');
+        const name = document.createElement('strong');
+        name.textContent = s.name;
+        const roles = document.createElement('div');
+        roles.className = 'muted';
+        roles.textContent = s.roles.join(' • ');
+        left.appendChild(name);
+        left.appendChild(roles);
+
+        const right = document.createElement('div');
+        right.className = 'sitter-actions';
+
+        const badge = document.createElement('span');
+        badge.className = 'badge ' + (isBooked ? 'booked' : 'free');
+        badge.textContent = isBooked ? 'Booked' : 'Free';
+        right.appendChild(badge);
+
+        // Only allow navigation/booking if sitter is NOT booked
+        if(!isBooked){
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'book-btn';
+          btn.textContent = 'Book';
+          btn.disabled = !selectedTime; // require time selection
+          btn.addEventListener('click', () => {
+            goToAppointment({ iso, time: timeSlotEl.value, sitter: s });
+          });
+          right.appendChild(btn);
+        }
+
+        card.appendChild(left);
+        card.appendChild(right);
+        listEl.appendChild(card);
+      });
+  
+    }
+
+    // Search / filter handlers
+    searchEl.addEventListener('input', renderAvailability);
+    filterFreeEl.addEventListener('change', renderAvailability);
+
+    // Enable/disable Book buttons when time changes
+    timeSlotEl.addEventListener('change', renderAvailability);
+
+    // Month nav
+    prevBtn.addEventListener('click', () => { view.m--; if(view.m < 0){ view.m = 11; view.y--; } buildCalendar(view.y, view.m); });
+    nextBtn.addEventListener('click', () => { view.m++; if(view.m > 11){ view.m = 0; view.y++; } buildCalendar(view.y, view.m); });
+
+    // Init
+    buildCalendar(view.y, view.m);
+    timeSlotEl.disabled = true; // ADDED
+  </script>
+</body>
+</html>

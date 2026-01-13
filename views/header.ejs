@@ -1,0 +1,28 @@
+<!-- REPLACED: use the site header/nav from public pages; header is now universal -->
+<header class="paws-header">
+  <div class="header-title">
+    <h1><a href="/">House Delano</a></h1>
+    <p class="header-subtitle">Boutique Canine Care
+    </p>
+  </div>
+  <nav class="paws-nav">
+    <button class="paws-nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="Toggle navigation menu">☰</button>
+    <ul id="site-menu">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/services">Services</a></li>
+      <li><a href="/appointmentForbooking">Appointments</a></li>
+      <li><a href="/meetAndgreet">Meet &amp; Greet</a></li>
+      <li><a href="/faq">FAQ</a></li>
+      <li><a href="/contact">Contact</a></li>
+      
+      
+      <!-- ✅ ADD THIS: Dynamic auth link that navigation.js can target -->
+      <li id="auth-link">
+        <a href="/signIn" id="auth-link-text">Sign In</a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+<script src="/scripts/navigation.js"></script>

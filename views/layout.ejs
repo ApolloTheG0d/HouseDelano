@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <!-- ADDED: viewport + shared fonts, CSS, and app JS moved here from public pages -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <!-- ADDED: project fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <!-- ADDED: public styles and scripts (keeps styling the same) -->
+  <link rel="stylesheet" href="/stylesheets/main.css" />
+  <script defer src="/scripts/main.js"></script>
+
+  <title><%= (typeof title !== 'undefined' && title) ? title : 'House Delano' %></title>
+</head>
+<body>
+  <!-- ADDED: allow pages to inject elements that must appear before the header (e.g., background) -->
+  <%- typeof pre !== 'undefined' ? pre : '' %>
+
+  <%- include('header') %>
+
+  <main>
+    <div class="paws-background"></div>
+    <%- body %>
+  </main>
+
+  <%- include('footer') %>
+</body>
+</html>

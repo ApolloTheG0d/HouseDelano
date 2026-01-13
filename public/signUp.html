@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- <head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>Sign Up | Paws &amp; Company</title> -->
+
+  <!-- Fonts & Icons -->
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Roboto+Mono&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" /> -->
+
+  <!-- Site CSS -->
+  <!-- <link href="stylesheets/main.css" rel="stylesheet" /> -->
+
+  <!-- Unified shapes + active shortcut + anchor gap -->
+  <style>
+    :root{
+      --accent-color:#2a7ae2;
+      --card-radius:1rem;
+      --card-border:1px solid #e6e6e6;
+      --card-shadow:0 4px 14px rgba(0,0,0,.06);
+      --card-bg:#fff;
+      --card-padding-y:.9rem;
+      --card-padding-x:1.1rem;
+      --card-max:760px;
+      --sticky-offset:120px; /* controls the gap under sticky bar */
+    }
+
+    /* Page layout */
+    .paws-auth-shell{display:flex;justify-content:center;padding:2rem 1rem;}
+    .paws-stack{display:flex;flex-direction:column;gap:1rem;width:100%;max-width:var(--card-max);margin:0 auto;}
+
+    /* Shortcut bar */
+    .section-nav{
+      background:var(--card-bg);border:var(--card-border);border-radius:var(--card-radius);box-shadow:var(--card-shadow);
+      padding:var(--card-padding-y) var(--card-padding-x);
+      display:flex;flex-wrap:wrap;justify-content:center;gap:.5rem;
+      width:100%;box-sizing:border-box;position:sticky;top:.5rem;z-index:10;
+      backdrop-filter:blur(2px);
+    }
+    .section-nav a{
+      text-decoration:none;padding:.45rem .7rem;border-radius:.6rem;border:1px solid #e6e6e6;
+      color:#333;font-size:.9rem;background:#fff;transition:all .18s ease;display:inline-flex;align-items:center;gap:.35rem;
+    }
+    .section-nav a:hover{border-color:var(--accent-color);color:var(--accent-color);}
+    .section-nav a.active{
+      background:var(--accent-color);color:#fff;border-color:var(--accent-color);
+      box-shadow:0 2px 8px rgba(42,122,226,.25) inset,0 1px 8px rgba(0,0,0,.06);
+    }
+
+    /* Cards (same shape/width as shortcut) */
+    .paws-auth-card{
+      background:var(--card-bg)!important;border:var(--card-border)!important;border-radius:var(--card-radius)!important;
+      box-shadow:var(--card-shadow)!important;padding:var(--card-padding-y) var(--card-padding-x)!important;
+      width:100%!important;max-width:none!important;box-sizing:border-box!important;
+      scroll-margin-top: calc(var(--sticky-offset) + 24px); /* creates visible gap when scrolling to anchors */
+    }
+
+    /* Typography */
+    .paws-auth-card h1,.paws-auth-card h2{
+      font-family:'Poppins',sans-serif;color:#222;margin:0 0 .55rem!important;border:0!important;padding:0!important;
+    }
+    .paws-auth-card h1{font-weight:600;font-size:1.75rem;}
+    .paws-auth-card h2{font-weight:600;font-size:1.2rem;}
+    .paws-note-legal{font-size:.95rem;color:#666;margin:.25rem 0 0;}
+    .top-inline{display:flex;justify-content:space-between;gap:.75rem;align-items:center;flex-wrap:wrap;}
+
+    /* Form grid */
+    .grid{display:grid;gap:1rem;}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr));}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr));}
+    @media(max-width:720px){.grid-2,.grid-3{grid-template-columns:1fr;}}
+
+    .paws-form-group{display:flex;flex-direction:column;gap:.375rem;}
+    .paws-input,select,textarea{
+      width:100%;box-sizing:border-box;font-family:'Poppins',sans-serif;font-size:1rem;
+      border:1px solid #ccc;border-radius:.5rem;padding:.6rem .75rem;transition:border-color .2s;
+    }
+    .paws-input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent-color);}
+    .hint{font-size:.85rem;color:#777;}
+
+    /* Password eye */
+    .paws-input-wrapper{position:relative;display:flex;align-items:center;}
+    .paws-input-wrapper .paws-input{padding-right:2.5rem;}
+    .paws-pw-toggle{
+      position:absolute;right:.75rem;width:1.5rem;height:1.5rem;display:inline-flex;align-items:center;justify-content:center;
+      background:transparent;border:0;cursor:pointer;color:#777;font-size:1rem;line-height:1;
+    }
+    .paws-pw-toggle:hover{color:#333;}
+
+    /* Primary button */
+    .paws-btn-primary{
+      width:100%;background:var(--accent-color);color:#fff;border:0;border-radius:.5rem;
+      padding:.95rem 1rem;font-weight:600;font-size:1rem;cursor:pointer;transition:background-color .2s;
+    }
+    .paws-btn-primary:hover{background:#1f5fc1;}
+
+    /* Consents */
+    .consents{display:grid;gap:.5rem;margin:.5rem 0 0;}
+    .consents label{display:flex;gap:.5rem;align-items:flex-start;font-size:.95rem;color:#333;}
+
+    /* Messages */
+    .paws-form-message.error{color:#b00020;margin-top:.25rem;}
+    .paws-form-message.success{color:#0a7c2f;margin-top:.25rem;}
+  </style>
+<!-- </head> -->
+
+<body>
+  <!-- <div class="paws-background"></div> -->
+
+  <!-- Header -->
+  <!-- <header class="paws-header">
+    <h1><a href="index.html">Paws &amp; Company</a></h1>
+    <nav class="paws-nav">
+      <button class="paws-nav-toggle" aria-controls="site-menu" aria-expanded="false" aria-label="Toggle navigation menu">☰</button>
+      <ul id="site-menu">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="appointmentForbooking.html">Appointments</a></li>
+        <li><a href="meetAndgreet.html">Meet &amp; Greet</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a aria-current="page" href="signup.html">Sign Up</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="signIn.html">Sign In</a></li>
+      </ul>
+    </nav>
+  </header> -->
+
+  <main class="paws-auth-shell">
+    <div class="paws-stack">
+      <!-- Shortcut bar -->
+      <nav class="section-nav" aria-label="Sign up sections">
+        <a href="#intro">Intro</a>
+        <a href="#account">Account</a>
+        <a href="#your-info">Your Info</a>
+        <a href="#your-pet">Your Pet</a>
+        <a href="#emergency">Emergency & Prefs</a>
+        <!-- <a href="#health">Health & Care</a>
+        <a href="#additional">Additional Pets</a> -->
+        <a href="#consents">Consents</a>
+      </nav>
+
+      <!-- 1) Intro -->
+      <section id="intro" class="paws-auth-card">
+        <div class="top-inline">
+          <div>
+            <h1>Create Your Account</h1>
+            <p class="paws-note-legal">A few quick details so we can tailor care to your pet from day one.</p>
+          </div>
+          <div class="paws-note-legal">Already have an Account? <a class="paws-link" href="signIn.html">Sign in Here!</a></div>
+        </div>
+      </section>
+
+      <!-- FORM START -->
+      <form id="signupForm" action="/auth/signup" method="post" novalidate>
+        <!-- 2) Account -->
+        <section id="account" class="paws-auth-card" aria-labelledby="account-title">
+          <h2 id="account-title">Account</h2>
+          <div id="accountMessage" class="message"></div>
+          
+          <div class="grid grid-2">
+            <div class="paws-form-group">
+              <label for="email">Email *</label>
+              <input type="email" id="email" name="email" class="paws-input" placeholder="you@example.com" required>
+            </div>
+
+            <div class="paws-form-group">
+              <label for="phone">Phone *</label>
+              <input type="tel" id="phone" name="phone" class="paws-input" placeholder="(555) 123-4567" required>
+            </div>
+
+            <div class="paws-form-group">
+              <label for="password">Password *</label>
+              <div class="paws-input-wrapper">
+                <input type="password" id="password" name="password" class="paws-input" placeholder="At least 8 characters" minlength="8" required>
+                <button type="button" class="paws-pw-toggle" aria-controls="password">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <div class="paws-form-group">
+              <label for="confirmPassword">Confirm Password *</label>
+              <div class="paws-input-wrapper">
+                <input type="password" id="confirmPassword" name="confirmPassword" class="paws-input" placeholder="Re-enter password" minlength="8" required>
+                <button type="button" class="paws-pw-toggle" aria-controls="confirmPassword">
+                  <i class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+              <div id="pwMsg" class="paws-form-message"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3) Your Info -->
+        <section id="your-info" class="paws-auth-card" aria-labelledby="info-title">
+          <h2 id="info-title">Your Info</h2>
+          <div class="grid grid-2">
+            <div class="paws-form-group">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" name="firstName" class="paws-input" placeholder="First name" required>
+            </div>
+            
+            <div class="paws-form-group">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" name="lastName" class="paws-input" placeholder="Last name" required>
+            </div>
+
+            <div class="paws-form-group" style="grid-column:1/-1">
+              <label for="streetAddress">Street Address</label>
+              <input type="text" id="streetAddress" name="streetAddress" class="paws-input" placeholder="123 Main St">
+            </div>
+
+            <div class="paws-form-group">
+              <label for="city">City *</label>
+              <input type="text" id="city" name="city" class="paws-input" placeholder="San Francisco" required>
+            </div>
+
+            <div class="paws-form-group">
+              <label for="state">State *</label>
+              <select id="state" name="state" class="paws-input" required>
+                <option value="">Select state</option>
+                <option value="CA">California</option>
+                <option value="NY">New York</option>
+                <option value="TX">Texas</option>
+                <!-- Add all other states -->
+              </select>
+            </div>
+
+            <div class="paws-form-group">
+              <label for="zipCode">ZIP Code *</label>
+              <input type="text" id="zipCode" name="zipCode" class="paws-input" placeholder="94110" pattern="\d{5}" required>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4) Your Pet -->
+        <section id="your-pet" class="paws-auth-card" aria-labelledby="pet-title">
+          <h2 id="pet-title">Your Pet</h2>
+          <div class="grid grid-2">
+            <div class="paws-form-group">
+              <label for="petName">Pet Name</label>
+              <input type="text" id="petName" name="petName" class="paws-input" placeholder="Luna">
+            </div>
+
+            <div class="paws-form-group">
+              <label for="species">Species</label>
+              <select id="species" name="species" class="paws-input">
+                <option value="">Select species</option>
+                <option value="Dog">Dog</option>
+                <option value="Cat">Cat</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+
+            <div class="paws-form-group">
+              <label for="breed">Breed</label>
+              <input type="text" id="breed" name="breed" class="paws-input" placeholder="Golden Retriever">
+            </div>
+
+            <div class="paws-form-group">
+              <label for="age">Age (years)</label>
+              <input type="number" id="age" name="age" class="paws-input" placeholder="3.5" step="0.5" min="0">
+            </div>
+
+            <div class="paws-form-group">
+              <label for="weight">Weight (lbs)</label>
+              <input type="number" id="weight" name="weight" class="paws-input" placeholder="65" step="0.1" min="0">
+            </div>
+
+            <div class="paws-form-group">
+              <label for="vaccinated">Vaccinated?</label>
+              <select id="vaccinated" name="vaccinated" class="paws-input">
+                <option value="yes">Yes</option>
+                <option value="no">No</option>
+              </select>
+            </div>
+          </div>
+        </section>
+
+        <section id="emergency" class="paws-auth-card" aria-labelledby="emergency-title">
+          <h2 id="emergency-title">Emergency Contact</h2>
+            <p class="paws-note-legal">Who should we contact in case of emergency?</p>
+
+            <div class="grid grid-2">
+              <div class="paws-form-group">
+                <label for="emergencyName">Contact Name</label>
+                <input type="text" id="emergencyName" name="emergencyName" class="paws-input" placeholder="Full name">
+              </div>
+            
+              <div class="paws-form-group">
+                <label for="emergencyPhone">Contact Phone *</label>
+                <input type="tel" id="emergencyPhone" name="emergencyPhone" class="paws-input" placeholder="(555) 123-4567">
+              </div>
+            
+              <div class="paws-form-group">
+                <label for="emergencyEmail">Contact Email</label>
+                <input type="email" id="emergencyEmail" name="emergencyEmail" class="paws-input" placeholder="contact@example.com">
+              </div>
+            
+              <div class="paws-form-group">
+                <label for="emergencyRelationship">Relationship</label>
+                <input type="text" id="emergencyRelationship" name="emergencyRelationship" class="paws-input" placeholder="Spouse, Friend, etc.">
+              </div>
+
+          </div>
+        </section>
+
+        <!-- 8) Consents + Submit -->
+        <section id="consents" class="paws-auth-card" aria-labelledby="consents-title">
+          <h2 id="consents-title">Consents</h2>
+          <div class="consents">
+            <label>
+              <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+              <span>I agree to the <a href="terms.html" target="_blank">Terms of Service</a> and <a href="privacy.html" target="_blank">Privacy Policy</a> *</span>
+            </label>
+
+            <label>
+              <input type="checkbox" id="agreeMarketing" name="agreeMarketing">
+              <span>Send me updates and promotional offers (optional)</span>
+            </label>
+          </div>
+
+          <div style="margin-top:1rem">
+            <button type="submit" class="paws-btn-primary" id="submitBtn">
+              <i class="fa-solid fa-user-plus"></i> Create Account
+            </button>
+          </div>
+
+          <div id="submitMessage" class="message" style="margin-top: 1rem;"></div>
+        </section>
+      </form>
+      <!-- FORM END -->
+    </div>
+  </main>
+
+  <!-- <footer>
+    <p>© 2025 Paws &amp; Company | <a href="privacy.html">Privacy</a> | <a href="terms.html">Terms</a></p>
+  </footer> -->
+
+  <!-- JS: eye toggle + validation + active shortcuts + smooth offset -->
+  <script>
+    // Toggle password visibility
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.paws-pw-toggle');
+      if (!btn) return;
+      const input = document.getElementById(btn.getAttribute('aria-controls'));
+      if (!input) return;
+      const hide = input.type === 'password';
+      input.type = hide ? 'text' : 'password';
+      btn.innerHTML = hide ? '<i class="fa-regular fa-eye-slash"></i>' : '<i class="fa-regular fa-eye"></i>';
+    });
+
+    // Password validation
+    (function(){
+      const form = document.getElementById('signupForm');
+      const pw = document.getElementById('password');
+      const pw2 = document.getElementById('confirmPassword');
+      const msg = document.getElementById('pwMsg');
+
+      //
+      const submitBtn = document.getElementById('submitBtn');
+      const submitMessage = document.getElementById('submitMessage');
+
+      function updatePwMsg(){
+        if(!pw.value || !pw2.value){ msg.textContent=''; msg.className='paws-form-message'; return; }
+        if(pw.value.length < 8){ msg.textContent='Password must be at least 8 characters.'; msg.className='paws-form-message error'; return; }
+        if(pw.value === pw2.value){ msg.textContent='Passwords match.'; msg.className='paws-form-message success'; }
+        else { msg.textContent='Passwords do not match.'; msg.className='paws-form-message error'; }
+      }
+
+      pw.addEventListener('input', updatePwMsg);
+      pw2.addEventListener('input', updatePwMsg);
+
+      // -----Form submission------- //
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (pw.value.length < 8) { updatePwMsg(); pw.focus(); return; }
+        if (pw.value !== pw2.value) { updatePwMsg(); pw2.focus(); return; }
+        if (!document.getElementById('agreeTerms').checked) {
+          alert('Please agree to the Terms and Privacy.');
+          document.getElementById('agreeTerms').focus();
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="loading-spinner"></span> Creating account...';
+        submitMessage.textContent = '';
+        submitMessage.classList.remove('show');
+
+        try {
+          const formData = new FormData(form);
+          const data = Object.fromEntries(formData);
+
+          console.log('📤 Sending signup data:', data); // ✅ ADD DEBUG LOG
+
+          const res = await fetch('/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+          });
+
+          const result = await res.json();
+
+          if (res.ok) {
+            submitMessage.textContent = result.message || '✅ Account created! Redirecting...';
+            submitMessage.className = 'message show success';
+            
+            // ✅ STORE USER INFO AFTER SIGNUP (auto-login)
+            sessionStorage.setItem('userLoggedIn', 'true');
+            sessionStorage.setItem('userId', result.user.id);
+            sessionStorage.setItem('userEmail', result.user.email);
+            sessionStorage.setItem('userName', result.user.firstName || 'User');
+            sessionStorage.setItem('userRole', 'user');
+            
+            // ✅ TRIGGER HEADER UPDATE EVENT
+            window.dispatchEvent(new Event('user-login'));
+            
+            setTimeout(() => window.location.href = result.redirect || '/index.html', 2000);
+          } else {
+            submitMessage.textContent = '❌ ' + (result.error || 'Signup failed');
+            submitMessage.className = 'message show error';
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+          }
+        } catch (err) {
+          submitMessage.textContent = '❌ Network error: ' + err.message;
+          submitMessage.className = 'message show error';
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fa-solid fa-user-plus"></i> Create Account';
+        }
+      });
+      //-----------------------------------------------------//
+
+      form.addEventListener('submit', function(e){
+        if(pw.value.length < 8){ e.preventDefault(); updatePwMsg(); pw.focus(); return; }
+        if(pw.value !== pw2.value){ e.preventDefault(); updatePwMsg(); pw2.focus(); return; }
+        if(!document.getElementById('agreeTerms').checked){ e.preventDefault(); alert('Please agree to the Terms and Privacy.'); document.getElementById('agreeTerms').focus(); }
+      });
+    })();
+
+    // Shortcut active state + smooth scroll with offset
+    (function(){
+      const links = Array.from(document.querySelectorAll('.section-nav a'));
+      const sections = links.map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+      const STICKY_OFFSET = 120; // match --sticky-offset
+
+      // Smooth click scroll with gap
+      links.forEach(a => {
+        a.addEventListener('click', (e) => {
+          const id = a.getAttribute('href');
+          const target = document.querySelector(id);
+          if(!target) return;
+          e.preventDefault();
+          const y = target.getBoundingClientRect().top + window.scrollY - STICKY_OFFSET;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+          setActive(id);
+          history.replaceState(null, '', id);
+        });
+      });
+
+      // Observe sections to auto-update active link
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if(entry.isIntersecting){
+            const id = '#'+entry.target.id;
+            setActive(id);
+          }
+        });
+      }, {
+        root: null,
+        rootMargin: `-${STICKY_OFFSET}px 0px -60% 0px`,
+        threshold: 0.1
+      });
+
+      sections.forEach(sec => io.observe(sec));
+
+      function setActive(id){
+        links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === id));
+      }
+
+      // On load: activate current hash if present
+      if(location.hash && document.querySelector(location.hash)){
+        setActive(location.hash);
+      } else if (links[0]) {
+        links[0].classList.add('active');
+      }
+    })();
+
+    // Mobile nav toggle (if not already handled in main.js)
+    (function(){
+      const btn = document.querySelector('.paws-nav-toggle');
+      const list = document.getElementById('site-menu');
+      if(!btn||!list) return;
+      btn.addEventListener('click', function(){
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', String(!expanded));
+        list.classList.toggle('open');
+      });
+    })();
+
+    // Loading spinner CSS
+    const style = document.createElement('style');
+    style.textContent = `
+      .loading-spinner {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        border: 2px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    `;
+    document.head.appendChild(style);
+  </script>
+</body>
+</html>
