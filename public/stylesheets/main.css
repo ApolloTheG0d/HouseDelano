@@ -1,10 +1,18 @@
-﻿:root {
+﻿@font-face {
+  font-family: 'Maharlika';
+  src: url('../fonts/Maharlika-DGAW.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
   --primary: #00e5ff;
   --secondary: #414141;
   --accent: #0099cc;
   --background: #121212;
   --text-light: #f0f0f0;
-  --font-header: 'Orbitron', sans-serif;
+  --font-header: 'Maharlika', 'Orbitron', sans-serif;
   --font-body: 'Roboto Mono', monospace;
   --icon-color: #00e5ff;
   --icon-hover: #ff0080;
@@ -1622,3 +1630,33 @@ nav.paws-nav a {
   /* ~17â€“1.25rem */
   line-height: 1.3;
 }
+
+/* ===== Contact Page Styles ===== */
+.contact-shell { max-width: 62.5rem; margin: 2rem auto; padding: 0 1rem 3rem; }
+.contact-header { text-align: center; margin-bottom: 3rem; }
+.contact-header h1 { font-size: 2.5rem; color: #111827; margin: 0 0 0.5rem 0; }
+.contact-header p { font-size: 1.1rem; color: #6b7280; margin: 0; }
+.contact-container { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+@media (max-width: 48rem) { .contact-container { grid-template-columns: 1fr; } }
+.contact-card { background: #fff; border: 0.0625rem solid #e6e6e6; border-radius: 1rem; box-shadow: 0 0.25rem 0.875rem rgba(0, 0, 0, .06); padding: 2rem; }
+.contact-card h2 { margin-top: 0; color: #111827; font-size: 1.3rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; }
+.contact-card p { color: #6b7280; line-height: 1.6; margin: 0.5rem 0; }
+.contact-card a { color: #2a7ae2; text-decoration: none; font-weight: 600; transition: color 0.2s; }
+.contact-card a:hover { color: #1f5fc1; text-decoration: underline; }
+.form-shell { background: #fff; border: 0.0625rem solid #e6e6e6; border-radius: 1rem; box-shadow: 0 0.25rem 0.875rem rgba(0, 0, 0, .06); padding: 2rem; }
+.form-shell h2 { margin-top: 0; color: #111827; font-size: 1.3rem; }
+.form-group { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
+.form-group label { font-weight: 600; color: #111827; font-size: 0.95rem; }
+.form-group input, .form-group textarea { width: 100%; padding: 0.75rem; border: 0.0625rem solid #d1d5db; border-radius: 0.5rem; font-family: inherit; font-size: 0.95rem; box-sizing: border-box; }
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2a7ae2; box-shadow: 0 0 0 0.1875rem rgba(42, 122, 226, 0.12); }
+.form-group textarea { resize: vertical; min-height: 9.375rem; }
+.btn-primary { background: #2a7ae2; color: #fff; padding: 0.75rem 1.5rem; border: none; border-radius: 0.5rem; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.15s ease; font-size: 1rem; width: 100%; justify-content: center; }
+.btn-primary:hover { background: #1f5fc1; }
+.message { padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem; display: none; font-size: 0.9rem; }
+.message.show { display: block; }
+.message.success { background: #10b98122; color: #065f46; border: 0.0625rem solid #10b98155; }
+.message.error { background: #fecaca44; color: #7f1d1d; border: 0.0625rem solid #fecaca77; }
+.info-item { display: flex; align-items: flex-start; gap: 1rem; margin-bottom: 1.5rem; }
+.info-item i { font-size: 1.5rem; color: #2a7ae2; margin-top: 0.25rem; min-width: 1.5rem; }
+.info-item-content h3 { margin: 0 0 0.25rem 0; color: #111827; }
+.info-item-content p { margin: 0; color: #6b7280; }
