@@ -91,7 +91,7 @@ router.post('/signup', async (req, res) => {
     //   console.log(`✅ Pet created for user ${user.id}: ${petName} (ID: ${petResult.rows[0].id})`);
     // }
     if (petName && petName.trim()) {
-      console.log(`🐾 Attempting to create pet for user ${user.id}:`);
+      console.log(`Attempting to create pet for user ${user.id}:`);
       console.log(`   Name:      ${petName}`);
       console.log(`   Species:   ${species}`);
       console.log(`   Breed:     ${breed}`);

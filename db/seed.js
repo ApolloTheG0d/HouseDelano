@@ -98,7 +98,7 @@ async function waitForDB(attempt = 1) {
 
 async function seed() {
   try {
-    console.log('\n🚀 Paws & Company - Database Setup');
+    console.log('\n🚀 House Delano - Database Setup');
     console.log('═══════════════════════════════════\n');
 
     await waitForDB();

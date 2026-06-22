@@ -96,15 +96,15 @@ try {
     if (name === 'index') {
     // Register root path
     router.get('/', (req, res) => {
-      res.render('static', { pre, raw: fragment, title: 'Paws & Company | Home' });
+      res.render('static', { pre, raw: fragment, title: 'House Delano | Home' });
     });
     
     // Also register /index and /index.html
     router.get('/index', (req, res) => {
-      res.render('static', { pre, raw: fragment, title: 'Paws & Company | Home' });
+      res.render('static', { pre, raw: fragment, title: 'House Delano | Home' });
     });
     router.get('/index.html', (req, res) => {
-      res.render('static', { pre, raw: fragment, title: 'Paws & Company | Home' });
+      res.render('static', { pre, raw: fragment, title: 'House Delano | Home' });
     });
 
     }
